@@ -3,12 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun; //Photon Unity Networking
 using TMPro;
+using Photon.Realtime;
 
 public class Launcher : MonoBehaviourPunCallbacks //gives access to callbacks for room creation, errors, joining lobbies, etc.
 {
+    public static Launcher Instance;
+
     [SerializeField] TMP_InputField roomNameInputField;
     [SerializeField] TMP_Text errorText;
     [SerializeField] TMP_Text roomNameText;
+    [SerializeField] Transform roomListContent;
+    [SerializeField] GameObject roomListItemPrefab;
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -62,8 +72,30 @@ public class Launcher : MonoBehaviourPunCallbacks //gives access to callbacks fo
         MenuManager.Instance.OpenMenu("loading");
     }
 
+    public void JoinRoom(RoomInfo info)
+    {
+        PhotonNetwork.JoinRoom(info.Name);
+        MenuManager.Instance.OpenMenu("loading");
+    }
+
     public override void OnLeftRoom()
     {
         MenuManager.Instance.OpenMenu("title");
+    }
+
+    // roomList gives room information (name, max players, properties, etc)
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        // clear the list each update
+        foreach(Transform trans in roomListContent)
+        {
+            Destroy(trans.gameObject);
+        }
+
+        // instantiate roomListItemPrefabs inside RoomListItem container
+        for (int i = 0; i < roomList.Count; ++i)
+        {
+            Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(roomList[i]);
+        }
     }
 }
