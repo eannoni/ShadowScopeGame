@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
         }
         walkSpeed = 7.0f;
         sprintSpeed = 15.0f;
-        mainCamera = GetComponentInChildren<Camera>();
+        //mainCamera = GetComponentInChildren<Camera>();
     }
 
     void Update()
@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour
 
         sprinting = Input.GetKey(KeyCode.LeftShift);
 
-        mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 
     void FixedUpdate()
@@ -58,9 +58,10 @@ public class PlayerController : MonoBehaviour
 
     void Rotate()
     {
-        Vector2 lookDirection = mousePos - body.position;
-        float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg - 90f;
-        body.rotation = angle;
+        Vector2 lookDirection = mousePos;
+        float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 100 * Time.deltaTime);
     }
 
 
