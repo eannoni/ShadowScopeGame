@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
 
     float horizontal, vertical;
     float moveLimiter = 0.7f; // limit diagonal speed
+    float rotationSpeed = 100f;
 
     [SerializeField] float walkSpeed;
     [SerializeField] float sprintSpeed;
@@ -61,7 +62,7 @@ public class PlayerController : MonoBehaviour
         Vector2 lookDirection = mousePos;
         float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
         Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 100 * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
     }
 
 
