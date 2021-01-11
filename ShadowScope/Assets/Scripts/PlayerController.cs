@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float walkSpeed;
     [SerializeField] float sprintSpeed;
     public bool sprinting = false;
+    public Camera mainCamera;
+    Vector2 mousePos;
 
     void Awake()
     {
@@ -30,6 +32,7 @@ public class PlayerController : MonoBehaviour
         }
         walkSpeed = 7.0f;
         sprintSpeed = 15.0f;
+        //mainCamera = GetComponentInChildren<Camera>();
     }
 
     void Update()
@@ -41,6 +44,8 @@ public class PlayerController : MonoBehaviour
         vertical = Input.GetAxisRaw("Vertical");
 
         sprinting = Input.GetKey(KeyCode.LeftShift);
+
+        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 
     void FixedUpdate()
@@ -48,6 +53,15 @@ public class PlayerController : MonoBehaviour
         if (!pv.IsMine) // only let the player control this one?
             return;
         Move();
+        Rotate();
+    }
+
+    void Rotate()
+    {
+        Vector2 lookDirection = mousePos;
+        float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 100 * Time.deltaTime);
     }
 
 
