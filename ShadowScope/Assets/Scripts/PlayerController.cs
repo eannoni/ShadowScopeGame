@@ -27,12 +27,7 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(GetComponentInChildren<Camera>().gameObject);
             Destroy(body); // this prevents glitchy movement by destroying RigidBody calculations for all other players.
-        } else
-        {
-
-            GetComponent<SpriteRenderer>().color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
         }
-
         walkSpeed = 7.0f;
         sprintSpeed = 15.0f;
     }
