@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     Rigidbody2D body;
     PhotonView pv;
+    public Transform firePoint;
 
     float horizontal, vertical;
     float moveLimiter = 0.7f; // limit diagonal speed
@@ -89,21 +90,17 @@ public class PlayerController : MonoBehaviour
 
     void Shoot()
     {
-        Vector2 lookDirection = mousePos;
-        float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
-        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);  
-        RaycastHit hit;
+        RaycastHit2D hit = Physics2D.Raycast(firePoint.position, mousePos);
 
-        if (Physics.Raycast(this.transform.position, transform.rotation.ToEulerAngles(), out hit)) // position, direction, output to variable hit, and range
+        if (hit) // position, direction, output to variable hit, and range
         {
             // Section does not work as far as I've tested.
             Debug.Log("Hit: " + hit.transform.name); // Prints the name of the object it hits if successful.
             Debug.Log("Hit something"); // Tests if a collision was detected even if the object has no name.
         }
 
-        Debug.Log("Origin of raycast:" + this.transform.position); // Prints raycast origin into console and confirms the raycast was sucessful
-        Debug.Log("Direction:" + transform.rotation.ToEulerAngles()); // Prints the direction of the raycast.
+        Debug.Log("Origin of raycast: " + firePoint.position); // Prints raycast origin into console and confirms the raycast was sucessful
+        Debug.Log("Direction: " + mousePos); // Prints the direction of the raycast.
 
     }
 }
