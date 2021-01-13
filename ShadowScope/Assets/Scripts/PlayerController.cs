@@ -94,26 +94,30 @@ public class PlayerController : MonoBehaviour
 
         if (hit) // position, direction, output to variable hit, and range
         {
+            Debug.Log("Hit something");
             if(hit.collider.tag == "Player")
             {
-                TakeDamage(10.0f, hit.collider.GetComponent<PhotonView>().ViewID);
+                Debug.Log("Hit player");
+                hit.collider.gameObject.GetComponent<PlayerController>().TakeDamage(10.0f);
             }
-            // Section does not work as far as I've tested.
         }
 
     }
 
-    public void TakeDamage(float damage, int targetID)
+    public void TakeDamage(float damage)
     {
-        pv.RPC("RPC_TakeDamage", RpcTarget.All, damage, targetID);
+        pv.RPC("RPC_TakeDamage", RpcTarget.All, damage);
     }
 
     [PunRPC]
-    void RPC_TakeDamage(float damage, int targetID)
+    void RPC_TakeDamage(float damage)
     {
-        if (pv.ViewID != targetID)
-            return;
 
-        Debug.Log("dealt damage: " + damage + " to player " + targetID);
+        if (!pv.IsMine)
+        {
+            return;
+        }
+
+        Debug.Log("dealt damage: " + damage);
     }
 }
