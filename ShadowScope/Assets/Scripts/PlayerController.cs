@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     PhotonView pv;
     public Transform firePoint;
     public Transform laserFirePoint;
+    public LineRenderer laserLinePrefab;
 
     float horizontal, vertical;
     float moveLimiter = 0.7f; // limit diagonal speed
@@ -28,7 +29,6 @@ public class PlayerController : MonoBehaviour
     public float fireRate = 0.25f;
     public float weaponRange = 10000f;
     private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);
-    private LineRenderer laserLine;
     private float nextFire;
 
 
@@ -50,8 +50,6 @@ public class PlayerController : MonoBehaviour
         }
         walkSpeed = 7.0f;
         sprintSpeed = 15.0f;
-
-        laserLine = GetComponent<LineRenderer>();
     }
 
     void Update()
@@ -109,38 +107,69 @@ public class PlayerController : MonoBehaviour
 
     void Shoot()
     {
-        StartCoroutine(ShotEffect()); //turns laser line on and off
+        Vector3 startPoint; // holds start point info that will be sent to all other clients
+        Vector3 endPoint; // holds end point info that will be sent to all other clients
+
+        // create raycast
         RaycastHit2D hit = Physics2D.Raycast(firePoint.position, mousePos);
-        laserLine.SetPosition(0, laserFirePoint.position);//set the start position of the visual effect
 
+        // assign startPoint
+        startPoint = laserFirePoint.position;
 
-        if (hit) // position, direction, output to variable hit, and range
+        if (hit) // if hit something
         {
-            Debug.Log("Hit something");
-            laserLine.SetPosition(1, hit.point);//end position of the laser
-
+            // if hit a player
             if(hit.collider.tag == "Player")
             {
-                Debug.Log("Hit player");
+                // deal damage
                 hit.collider.gameObject.GetComponent<PlayerController>().TakeDamage(10.0f);
             }
+
+            // assign endPoint
+            endPoint = hit.point;
         }
-        else
+        else // if didn't hit anything
         {
-            Vector3 lineVector = (firePoint.position + (laserFirePoint.transform.right * weaponRange));
-            lineVector.z = 0;
-            laserLine.SetPosition(1, lineVector);
+            // assign endPoint to weapon's range
+            endPoint = (firePoint.position + (laserFirePoint.transform.right * weaponRange));
+            endPoint.z = 0;
         }
 
+        // animate line
+        ShootLine(startPoint, endPoint);
     }
-    private IEnumerator ShotEffect()
+
+
+    // tells all clients to draw a line from startPos to endPos
+    public void ShootLine(Vector3 startPos, Vector3 endPos)
     {
-        laserLine.enabled = true;//turn on line renderer
-
-        yield return shotDuration;//wait for shot duration time
-
-        laserLine.enabled = false;//deactivate line renderer once waiting
+        pv.RPC("RPC_ShootLine", RpcTarget.All, startPos, endPos);
     }
+
+    [PunRPC]
+    void RPC_ShootLine(Vector3 startPos, Vector3 endPos)
+    {
+        StartCoroutine(ShotEffect(startPos, endPos));
+    }
+
+    // draws line from startPos to endPos for a given amount of time
+    private IEnumerator ShotEffect(Vector3 startPos, Vector3 endPos)
+    {
+        // instantiate and initialize LineRenderer prefab
+        LineRenderer laserGO = Instantiate(laserLinePrefab);
+        laserGO.SetPosition(0, startPos);
+        laserGO.SetPosition(1, endPos);
+
+        // enable and disable LineRenderer for given amount of time
+        laserGO.enabled = true;
+        yield return shotDuration;
+        laserGO.enabled = false;
+
+        // destroy instantiated LineRenderer
+        Destroy(laserGO);
+    }
+
+
 
     public void TakeDamage(float damage)
     {
