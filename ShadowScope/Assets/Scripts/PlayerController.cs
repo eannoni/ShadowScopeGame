@@ -122,21 +122,19 @@ public class PlayerController : MonoBehaviour
     {
 
         if (!pv.IsMine)
-        {
             return;
-        }
 
         currHealth -= damage;
-        if(currHealth <= 0)
-        {
-            Die();
-        }
+        Debug.Log("Took damage.");
+        Debug.Log("Current HP: " + currHealth);
 
-        Debug.Log("dealt damage: " + damage);
+        if(currHealth <= 0)
+            Die();
     }
 
     void Die()
     {
+        Debug.Log("You died");
         playerManager.Die();
     }
 }
