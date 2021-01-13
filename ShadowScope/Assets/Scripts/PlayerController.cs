@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D body;
     PhotonView pv;
     public Transform firePoint;
-    public float health;
 
     float horizontal, vertical;
     float moveLimiter = 0.7f; // limit diagonal speed
@@ -17,6 +16,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float walkSpeed;
     [SerializeField] float sprintSpeed;
     public bool sprinting = false;
+    const float maxHealth = 100f;
+    float currHealth = maxHealth;
+
+    PlayerManager playerManager;
+
     public Camera mainCamera;
     Vector2 mousePos;
 
@@ -24,6 +28,9 @@ public class PlayerController : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         pv = GetComponent<PhotonView>();
+
+        // gets player manager
+        playerManager = PhotonView.Find((int)pv.InstantiationData[0]).GetComponent<PlayerManager>();
     }
 
     void Start()
@@ -35,7 +42,6 @@ public class PlayerController : MonoBehaviour
         }
         walkSpeed = 7.0f;
         sprintSpeed = 15.0f;
-        health = 100.0f;
         //mainCamera = GetComponentInChildren<Camera>();
     }
 
@@ -120,7 +126,17 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        health -= damage;
+        currHealth -= damage;
+        if(currHealth <= 0)
+        {
+            Die();
+        }
+
         Debug.Log("dealt damage: " + damage);
+    }
+
+    void Die()
+    {
+        playerManager.Die();
     }
 }
