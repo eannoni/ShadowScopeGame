@@ -94,13 +94,24 @@ public class PlayerController : MonoBehaviour
 
         if (hit) // position, direction, output to variable hit, and range
         {
+            Debug.Log("Hit something");
+            TakeDamage(10.0f);
             // Section does not work as far as I've tested.
-            Debug.Log("Hit: " + hit.transform.name); // Prints the name of the object it hits if successful.
-            Debug.Log("Hit something"); // Tests if a collision was detected even if the object has no name.
         }
 
-        Debug.Log("Origin of raycast: " + firePoint.position); // Prints raycast origin into console and confirms the raycast was sucessful
-        Debug.Log("Direction: " + mousePos); // Prints the direction of the raycast.
+    }
 
+    public void TakeDamage(float damage)
+    {
+        pv.RPC("RPC_TakeDamage", RpcTarget.All, damage);
+    }
+
+    [PunRPC]
+    void RPC_TakeDamage(float damage)
+    {
+        if (!pv.IsMine)
+            return;
+
+        Debug.Log("took damage: " + damage);
     }
 }
