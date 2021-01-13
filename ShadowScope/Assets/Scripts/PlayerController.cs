@@ -21,7 +21,6 @@ public class PlayerController : MonoBehaviour
 
     PlayerManager playerManager;
 
-    public Camera mainCamera;
     Vector2 mousePos;
 
     void Awake()
@@ -42,7 +41,6 @@ public class PlayerController : MonoBehaviour
         }
         walkSpeed = 7.0f;
         sprintSpeed = 15.0f;
-        //mainCamera = GetComponentInChildren<Camera>();
     }
 
     void Update()
