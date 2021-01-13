@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D body;
     PhotonView pv;
     public Transform firePoint;
+    public float health;
 
     float horizontal, vertical;
     float moveLimiter = 0.7f; // limit diagonal speed
@@ -34,6 +35,7 @@ public class PlayerController : MonoBehaviour
         }
         walkSpeed = 7.0f;
         sprintSpeed = 15.0f;
+        health = 100.0f;
         //mainCamera = GetComponentInChildren<Camera>();
     }
 
@@ -118,6 +120,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        health -= damage;
         Debug.Log("dealt damage: " + damage);
     }
 }

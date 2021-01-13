@@ -178,6 +178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firePoint: {fileID: 4398612981776340238}
+  health: 100
   walkSpeed: 0
   sprintSpeed: 0
   sprinting: 0
