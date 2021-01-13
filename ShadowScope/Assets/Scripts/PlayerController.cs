@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D body;
     PhotonView pv;
     public Transform firePoint;
+    public Transform laserFirePoint;
 
     float horizontal, vertical;
     float moveLimiter = 0.7f; // limit diagonal speed
@@ -22,6 +23,14 @@ public class PlayerController : MonoBehaviour
     PlayerManager playerManager;
 
     Vector2 mousePos;
+
+    //Laserstuff:
+    public float fireRate = 0.25f;
+    public float weaponRange = 10000f;
+    private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);
+    private LineRenderer laserLine;
+    private float nextFire;
+
 
     void Awake()
     {
@@ -41,6 +50,8 @@ public class PlayerController : MonoBehaviour
         }
         walkSpeed = 7.0f;
         sprintSpeed = 15.0f;
+
+        laserLine = GetComponent<LineRenderer>();
     }
 
     void Update()
@@ -55,8 +66,10 @@ public class PlayerController : MonoBehaviour
 
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        if (Input.GetButtonDown("Fire1")) // Left click fires
+        if (Input.GetButtonDown("Fire1") && Time.time > nextFire) // Left click fires
         {
+            nextFire = Time.time + fireRate; //updating time when player can shoot next
+
             Shoot();
         }
     }
@@ -96,18 +109,37 @@ public class PlayerController : MonoBehaviour
 
     void Shoot()
     {
+        StartCoroutine(ShotEffect()); //turns laser line on and off
         RaycastHit2D hit = Physics2D.Raycast(firePoint.position, mousePos);
+        laserLine.SetPosition(0, laserFirePoint.position);//set the start position of the visual effect
+
 
         if (hit) // position, direction, output to variable hit, and range
         {
             Debug.Log("Hit something");
+            laserLine.SetPosition(1, hit.point);//end position of the laser
+
             if(hit.collider.tag == "Player")
             {
                 Debug.Log("Hit player");
                 hit.collider.gameObject.GetComponent<PlayerController>().TakeDamage(10.0f);
             }
         }
+        else
+        {
+            Vector3 lineVector = (firePoint.position + (laserFirePoint.transform.right * weaponRange));
+            lineVector.z = 0;
+            laserLine.SetPosition(1, lineVector);
+        }
 
+    }
+    private IEnumerator ShotEffect()
+    {
+        laserLine.enabled = true;//turn on line renderer
+
+        yield return shotDuration;//wait for shot duration time
+
+        laserLine.enabled = false;//deactivate line renderer once waiting
     }
 
     public void TakeDamage(float damage)
