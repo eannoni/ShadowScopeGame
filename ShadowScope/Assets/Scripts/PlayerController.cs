@@ -47,6 +47,11 @@ public class PlayerController : MonoBehaviour
         sprinting = Input.GetKey(KeyCode.LeftShift);
 
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        if (Input.GetButtonDown("Fire1")) // Left click fires
+        {
+            Shoot();
+        }
     }
 
     void FixedUpdate()
@@ -80,5 +85,25 @@ public class PlayerController : MonoBehaviour
             body.velocity = new Vector2(horizontal * sprintSpeed, vertical * sprintSpeed);
         else
             body.velocity = new Vector2(horizontal * walkSpeed, vertical * walkSpeed);
+    }
+
+    void Shoot()
+    {
+        Vector2 lookDirection = mousePos;
+        float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);  
+        RaycastHit hit;
+
+        if (Physics.Raycast(this.transform.position, transform.rotation.ToEulerAngles(), out hit)) // position, direction, output to variable hit, and range
+        {
+            // Section does not work as far as I've tested.
+            Debug.Log("Hit: " + hit.transform.name); // Prints the name of the object it hits if successful.
+            Debug.Log("Hit something"); // Tests if a collision was detected even if the object has no name.
+        }
+
+        Debug.Log("Origin of raycast:" + this.transform.position); // Prints raycast origin into console and confirms the raycast was sucessful
+        Debug.Log("Direction:" + transform.rotation.ToEulerAngles()); // Prints the direction of the raycast.
+
     }
 }
