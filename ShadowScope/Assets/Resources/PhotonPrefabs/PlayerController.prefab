@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2103375659581709523}
   - component: {fileID: 7508704370860464296}
   - component: {fileID: 877740573454481316}
+  - component: {fileID: 5873814561374762440}
   m_Layer: 0
   m_Name: PlayerController
   m_TagString: Player
@@ -56,7 +57,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: b57b2b6eb9eeb72419504705c6d3e2c2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -185,6 +186,49 @@ MonoBehaviour:
   sprinting: 0
   fireRate: 0.25
   weaponRange: 10000
+--- !u!114 &5873814561374762440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783222942177822694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 1
+  m_CastsShadows: 1
+  m_SelfShadows: 0
+  m_ApplyToSortingLayers: 00000000
+  m_ShapePath:
+  - {x: -0.024095058, y: -0.06402872, z: 0}
+  - {x: 0.03531108, y: -0.051723003, z: 0}
+  - {x: 0.08828392, y: -0.032460213, z: 0}
+  - {x: 0.10995465, y: -0.015605211, z: 0}
+  - {x: 0.14125681, y: -0.020420885, z: 0}
+  - {x: 0.23275538, y: -0.020420885, z: 0}
+  - {x: 0.31966504, y: 0.007400465, z: 0}
+  - {x: 0.25201815, y: 0.015696956, z: 0}
+  - {x: 0.22553177, y: 0.046999075, z: 0}
+  - {x: 0.17496677, y: 0.1023798, z: 0}
+  - {x: 0.10027361, y: 0.14094801, z: 0}
+  - {x: 0.044942476, y: 0.16498409, z: 0}
+  - {x: 0.0112325195, y: 0.16739197, z: 0}
+  - {x: -0.025288811, y: 0.1986128, z: 0}
+  - {x: -0.053779554, y: 0.19387837, z: 0}
+  - {x: -0.11626182, y: 0.12789498, z: 0}
+  - {x: -0.11638389, y: 0.1023798, z: 0}
+  - {x: -0.09063508, y: 0.07377293, z: 0}
+  - {x: -0.08372263, y: 0.013864565, z: 0}
+  - {x: -0.07545032, y: -0.015605211, z: 0}
+  - {x: -0.05837674, y: -0.03221884, z: 0}
+  m_ShapePathHash: -1237606555
+  m_Mesh: {fileID: 0}
+  m_InstanceId: -24662
 --- !u!1 &1094820708828103118
 GameObject:
   m_ObjectHideFlags: 0
