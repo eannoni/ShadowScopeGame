@@ -180,6 +180,9 @@ MonoBehaviour:
   laserFirePoint: {fileID: 9176646572250459817}
   laserLinePrefab: {fileID: 736312740818469446, guid: 54a740fa66a9d4de988a479bfc5633ce,
     type: 3}
+  team: 0
+  redTeam: {fileID: 21300000, guid: e6d4eb09151bf9f4a9bf56b5f1636cfa, type: 3}
+  blueTeam: {fileID: 21300000, guid: dc535daf35489774dae5fb42a5d6dc26, type: 3}
   walkSpeed: 0
   sprintSpeed: 0
   sprinting: 0

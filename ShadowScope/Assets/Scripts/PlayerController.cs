@@ -11,10 +11,17 @@ public class PlayerController : MonoBehaviour
     public Transform laserFirePoint;
     public LineRenderer laserLinePrefab;
 
+    [Header("Team Info")]
+    public int team; // 0: red, 1: blue
+    public Sprite redTeam;
+    public Sprite blueTeam;
+
     float horizontal, vertical;
     float moveLimiter = 0.7f; // limit diagonal speed
     float rotationSpeed = 100f;
 
+
+    [Header("Movement")]
     [SerializeField] float walkSpeed;
     [SerializeField] float sprintSpeed;
     public bool sprinting = false;
@@ -28,9 +35,8 @@ public class PlayerController : MonoBehaviour
     //Laserstuff:
     public float fireRate = 0.25f;
     public float weaponRange = 10000f;
-    private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);
-    private float nextFire;
-
+    private float shotDuration = 0.07f; // how long the bullet trail is enabled
+    private float nextFire; // amount of time before next fire is allowed
 
     void Awake()
     {
@@ -39,6 +45,7 @@ public class PlayerController : MonoBehaviour
 
         // gets player manager
         playerManager = PhotonView.Find((int)pv.InstantiationData[0]).GetComponent<PlayerManager>();
+        SetSprite();
     }
 
     void Start()
@@ -149,24 +156,19 @@ public class PlayerController : MonoBehaviour
     [PunRPC]
     void RPC_ShootLine(Vector3 startPos, Vector3 endPos)
     {
-        StartCoroutine(ShotEffect(startPos, endPos));
+        ShotEffect(startPos, endPos);
     }
 
     // draws line from startPos to endPos for a given amount of time
-    private IEnumerator ShotEffect(Vector3 startPos, Vector3 endPos)
+    private void ShotEffect(Vector3 startPos, Vector3 endPos)
     {
         // instantiate and initialize LineRenderer prefab
         LineRenderer laserGO = Instantiate(laserLinePrefab);
         laserGO.SetPosition(0, startPos);
         laserGO.SetPosition(1, endPos);
 
-        // enable and disable LineRenderer for given amount of time
-        laserGO.enabled = true;
-        yield return shotDuration;
-        laserGO.enabled = false;
-
         // destroy instantiated LineRenderer
-        Destroy(laserGO);
+        Destroy(laserGO.gameObject, shotDuration);
     }
 
 
@@ -189,6 +191,24 @@ public class PlayerController : MonoBehaviour
 
         if(currHealth <= 0)
             Die();
+    }
+
+    void SetSprite()
+    {
+        if(team == 0)
+        {
+            Debug.Log("Team color set to: red");
+            GetComponent<SpriteRenderer>().sprite = redTeam;
+        }
+        else if (team == 1)
+        {
+            Debug.Log("Team color set to: blue");
+            GetComponent<SpriteRenderer>().sprite = blueTeam;
+        }
+        else
+        {
+            Debug.LogError("ERROR: unknown team number, cannot assign player sprite");
+        }
     }
 
     void Die()
