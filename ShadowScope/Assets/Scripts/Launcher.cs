@@ -102,7 +102,7 @@ public class Launcher : MonoBehaviourPunCallbacks //gives access to callbacks fo
     public void StartGame()
     {
         // 1 is the scene index in the Build Settings (Game scene)
-        // this applies to all players in game, rather than unity loading the scene which would only trigger the host's scene
+        // using PhotonNetwork applies to all players in game, rather than using Unity to load the scene, which would only trigger the host's scene
         PhotonNetwork.LoadLevel(1);
     }
 

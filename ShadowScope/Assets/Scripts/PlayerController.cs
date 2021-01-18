@@ -11,15 +11,12 @@ public class PlayerController : MonoBehaviour
     public Transform laserFirePoint;
     public LineRenderer laserLinePrefab;
 
-    [Header("Team Info")]
-    public int team; // 0: red, 1: blue
-    public Sprite redTeam;
-    public Sprite blueTeam;
-
     float horizontal, vertical;
     float moveLimiter = 0.7f; // limit diagonal speed
     float rotationSpeed = 100f;
 
+    public Sprite redTeam;
+    public Sprite blueTeam;
 
     [Header("Movement")]
     [SerializeField] float walkSpeed;
@@ -45,7 +42,8 @@ public class PlayerController : MonoBehaviour
 
         // gets player manager
         playerManager = PhotonView.Find((int)pv.InstantiationData[0]).GetComponent<PlayerManager>();
-        SetSprite();
+
+        SetSprite(); // set the sprite for the team
     }
 
     void Start()
@@ -195,12 +193,12 @@ public class PlayerController : MonoBehaviour
 
     void SetSprite()
     {
-        if(team == 0)
+        if (playerManager.team == 0)
         {
             Debug.Log("Team color set to: red");
             GetComponent<SpriteRenderer>().sprite = redTeam;
         }
-        else if (team == 1)
+        else if (playerManager.team == 1)
         {
             Debug.Log("Team color set to: blue");
             GetComponent<SpriteRenderer>().sprite = blueTeam;
