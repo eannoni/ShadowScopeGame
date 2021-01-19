@@ -21,8 +21,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] float walkSpeed;
-    [SerializeField] float sprintSpeed;
-    public bool sprinting = false;
+    [SerializeField] float crouchSpeed;
+    public bool crouching = false;
     const float maxHealth = 100f;
     float currHealth = maxHealth;
 
@@ -53,8 +53,8 @@ public class PlayerController : MonoBehaviour
             Destroy(GetComponentInChildren<Camera>().gameObject);
             Destroy(body); // this prevents glitchy movement by destroying RigidBody calculations for all other players.
         }
-        walkSpeed = 7.0f;
-        sprintSpeed = 15.0f;
+        walkSpeed = 10.0f;
+        crouchSpeed = 5.0f;
 
         StartCoroutine(SetSprite()); // set the sprite for the team
     }
@@ -67,7 +67,7 @@ public class PlayerController : MonoBehaviour
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
 
-        sprinting = Input.GetKey(KeyCode.LeftShift);
+        crouching = Input.GetKey(KeyCode.LeftShift);
 
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -106,8 +106,8 @@ public class PlayerController : MonoBehaviour
             vertical *= moveLimiter;
         }
 
-        if (sprinting)
-            body.velocity = new Vector2(horizontal * sprintSpeed, vertical * sprintSpeed);
+        if (crouching)
+            body.velocity = new Vector2(horizontal * crouchSpeed, vertical * crouchSpeed);
         else
             body.velocity = new Vector2(horizontal * walkSpeed, vertical * walkSpeed);
     }
