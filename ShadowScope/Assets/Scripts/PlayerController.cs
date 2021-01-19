@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     Rigidbody2D body;
     PhotonView pv;
+
+    HealthBar healthBar;
+
     public Transform firePoint;
     public Transform laserFirePoint;
     public LineRenderer laserLinePrefab;
@@ -19,20 +23,21 @@ public class PlayerController : MonoBehaviour
     public Sprite redTeam;
     public Sprite blueTeam;
 
-    [Header("Movement")]
     [SerializeField] float walkSpeed;
     [SerializeField] float crouchSpeed;
     public bool crouching = false;
-    const float maxHealth = 100f;
-    float currHealth = maxHealth;
+
+    const int maxHealth = 100;
+    int currHealth = maxHealth;
 
     PlayerManager playerManager;
 
     Vector2 mousePos;
 
     //Laserstuff:
+    public int damage = 20;
     public float fireRate = 0.25f;
-    public float weaponRange = 10000f;
+    public float weaponRange = 1000f;
     private float shotDuration = 0.07f; // how long the bullet trail is enabled
     private float nextFire; // amount of time before next fire is allowed
 
@@ -40,6 +45,8 @@ public class PlayerController : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         pv = GetComponent<PhotonView>();
+        healthBar = GameObject.FindWithTag("HealthBar").GetComponent<HealthBar>();
+        healthBar.Hide();
 
         // gets player manager
         playerManager = PhotonView.Find((int)pv.InstantiationData[0]).GetComponent<PlayerManager>();
@@ -53,9 +60,12 @@ public class PlayerController : MonoBehaviour
             Destroy(GetComponentInChildren<Camera>().gameObject);
             Destroy(body); // this prevents glitchy movement by destroying RigidBody calculations for all other players.
         }
+        else
+        {
+            healthBar.SetMaxHealth(maxHealth);
+        }
         walkSpeed = 10.0f;
         crouchSpeed = 5.0f;
-
         StartCoroutine(SetSprite()); // set the sprite for the team
     }
 
@@ -134,7 +144,7 @@ public class PlayerController : MonoBehaviour
                 if (hitPC.playerManager.team != playerManager.team)
                 {
                     // deal damage
-                    hitPC.TakeDamage(10.0f);
+                    hitPC.TakeDamage();
                 }
             }
 
@@ -179,19 +189,20 @@ public class PlayerController : MonoBehaviour
 
 
 
-    public void TakeDamage(float damage)
+    public void TakeDamage()
     {
-        pv.RPC("RPC_TakeDamage", RpcTarget.All, damage);
+        pv.RPC("RPC_TakeDamage", RpcTarget.All);
     }
 
     [PunRPC]
-    void RPC_TakeDamage(float damage)
+    void RPC_TakeDamage()
     {
 
         if (!pv.IsMine)
             return;
 
         currHealth -= damage;
+        healthBar.SetHealth(currHealth);
         Debug.Log("Took damage.");
         Debug.Log("Current HP: " + currHealth);
 
@@ -202,6 +213,10 @@ public class PlayerController : MonoBehaviour
     IEnumerator SetSprite()
     {
         yield return new WaitForSeconds(0.4f);
+
+        if (pv.IsMine)
+            healthBar.Show();
+
         if (playerManager.team == 0)
         {
             Debug.Log("Team color set to: red");
@@ -222,5 +237,11 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("You died");
         playerManager.Die();
+    }
+
+    void OnDestroy()
+    {
+        if(pv.IsMine)
+            healthBar.Hide();
     }
 }
