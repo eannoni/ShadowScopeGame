@@ -45,6 +45,18 @@ public class PlayerManager : MonoBehaviour
     public void Die()
     {
         PhotonNetwork.Destroy(controller);
+
+        // set score
+        if(team == 0)
+            ScoreManager.Instance.redLives--;
+        else
+            ScoreManager.Instance.blueLives--;
+
+        bool isWinner = ScoreManager.Instance.IsWinner();
+
+        // update score on all clients
+        PV.RPC("RPC_SetScoreText", RpcTarget.All, ScoreManager.Instance.redLives, ScoreManager.Instance.blueLives, isWinner);
+
         CreateController();
     }
 
@@ -64,5 +76,20 @@ public class PlayerManager : MonoBehaviour
         Debug.Log("RPC SetTeam");
         team = whichTeam; // set the team number
         Debug.Log("inside RPC SetTeam...team = " + team);
+    }
+
+    // sets new scores and if winner, queues winner menu
+    [PunRPC]
+    void RPC_SetScoreText(int newRedLives, int newBlueLives, bool isWinner)
+    {
+        // update scores
+        ScoreManager.Instance.redLives = newRedLives;
+        ScoreManager.Instance.blueLives = newBlueLives;
+
+        // display scores
+        ScoreManager.Instance.SetScoreText();
+
+        if (isWinner)
+            ScoreManager.Instance.DisplayWinner();
     }
 }
