@@ -32,6 +32,8 @@ public class PlayerController : MonoBehaviour
 
     PlayerManager playerManager;
 
+    ScoreManager scoreManager;
+
     Vector2 mousePos;
 
     //Laserstuff:
@@ -67,6 +69,8 @@ public class PlayerController : MonoBehaviour
         walkSpeed = 10.0f;
         crouchSpeed = 5.0f;
         StartCoroutine(SetSprite()); // set the sprite for the team
+
+        scoreManager = GameObject.FindGameObjectWithTag("ScoreManager").GetComponent<ScoreManager>();
     }
 
     void Update()
@@ -74,18 +78,21 @@ public class PlayerController : MonoBehaviour
         if (!pv.IsMine) // only let the player control this one?
             return;
 
-        horizontal = Input.GetAxisRaw("Horizontal");
-        vertical = Input.GetAxisRaw("Vertical");
-
-        crouching = Input.GetKey(KeyCode.LeftShift);
-
-        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        if (Input.GetButtonDown("Fire1") && Time.time > nextFire) // Left click fires
+        if (!scoreManager.IsWinner())
         {
-            nextFire = Time.time + fireRate; //updating time when player can shoot next
+            horizontal = Input.GetAxisRaw("Horizontal");
+            vertical = Input.GetAxisRaw("Vertical");
 
-            Shoot();
+            crouching = Input.GetKey(KeyCode.LeftShift);
+
+            mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            if (Input.GetButtonDown("Fire1") && Time.time > nextFire) // Left click fires
+            {
+                nextFire = Time.time + fireRate; //updating time when player can shoot next
+
+                Shoot();
+            }
         }
     }
 
