@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     float moveLimiter = 0.7f; // limit diagonal speed
     float rotationSpeed = 100f;
 
+    public SpriteRenderer spriteRenderer;
     public Sprite redTeam;
     public Sprite blueTeam;
 
@@ -43,7 +44,6 @@ public class PlayerController : MonoBehaviour
         // gets player manager
         playerManager = PhotonView.Find((int)pv.InstantiationData[0]).GetComponent<PlayerManager>();
 
-        SetSprite(); // set the sprite for the team
     }
 
     void Start()
@@ -55,6 +55,8 @@ public class PlayerController : MonoBehaviour
         }
         walkSpeed = 7.0f;
         sprintSpeed = 15.0f;
+
+        StartCoroutine(SetSprite()); // set the sprite for the team
     }
 
     void Update()
@@ -123,11 +125,17 @@ public class PlayerController : MonoBehaviour
 
         if (hit) // if hit something
         {
-            // if hit a player
-            if(hit.collider.tag == "Player")
+            // hit a player?
+            if (hit.collider.tag == "Player")
             {
-                // deal damage
-                hit.collider.gameObject.GetComponent<PlayerController>().TakeDamage(10.0f);
+                PlayerController hitPC = hit.collider.gameObject.GetComponent<PlayerController>();
+
+                // hit someone on other team?
+                if (hitPC.playerManager.team != playerManager.team)
+                {
+                    // deal damage
+                    hitPC.TakeDamage(10.0f);
+                }
             }
 
             // assign endPoint
@@ -191,17 +199,18 @@ public class PlayerController : MonoBehaviour
             Die();
     }
 
-    void SetSprite()
+    IEnumerator SetSprite()
     {
+        yield return new WaitForSeconds(0.25f);
         if (playerManager.team == 0)
         {
             Debug.Log("Team color set to: red");
-            GetComponent<SpriteRenderer>().sprite = redTeam;
+            spriteRenderer.sprite = redTeam;
         }
         else if (playerManager.team == 1)
         {
             Debug.Log("Team color set to: blue");
-            GetComponent<SpriteRenderer>().sprite = blueTeam;
+            spriteRenderer.sprite = blueTeam;
         }
         else
         {

@@ -19,20 +19,16 @@ public class PlayerManager : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("In PlayerManager Start");
+
+        // assign teams
         team = -1;
-        Debug.Log("In PlayerManager start method");
+        PV.RPC("RPC_GetTeam", RpcTarget.MasterClient);
+
         if (PV.IsMine) // if PhotonView is owned by the local player
         {
-            // assign teams
-            Debug.Log("Assigning Teams");
-            PV.RPC("RPC_GetTeam", RpcTarget.MasterClient);
-
             Debug.Log("Creating Controller");
             CreateController();
-        }
-        else
-        {
-            PV.RPC("RPC_GetTeam", RpcTarget.MasterClient);
         }
     }
 
@@ -56,14 +52,17 @@ public class PlayerManager : MonoBehaviour
     [PunRPC]
     void RPC_GetTeam()
     {
+        Debug.Log("RPC GetTeam");
         team = RoomManager.Instance.GetNextTeamNumber();
-        PV.RPC("RPC_SentTeam", RpcTarget.OthersBuffered, team);
+        PV.RPC("RPC_SentTeam", RpcTarget.Others, team);
     }
 
     // broadcast players' team numbers to all other clients
     [PunRPC]
     void RPC_SentTeam(int whichTeam)
     {
+        Debug.Log("RPC SetTeam");
         team = whichTeam; // set the team number
+        Debug.Log("inside RPC SetTeam...team = " + team);
     }
 }

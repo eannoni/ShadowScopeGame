@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_Size: {x: 0.2, y: 0.2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!70 &8150305117645506234
@@ -180,6 +180,7 @@ MonoBehaviour:
   laserFirePoint: {fileID: 9176646572250459817}
   laserLinePrefab: {fileID: 736312740818469446, guid: 54a740fa66a9d4de988a479bfc5633ce,
     type: 3}
+  spriteRenderer: {fileID: 1613372406141727162}
   redTeam: {fileID: 21300000, guid: e6d4eb09151bf9f4a9bf56b5f1636cfa, type: 3}
   blueTeam: {fileID: 21300000, guid: dc535daf35489774dae5fb42a5d6dc26, type: 3}
   walkSpeed: 0
