@@ -48,7 +48,6 @@ public class PlayerController : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         pv = GetComponent<PhotonView>();
         healthBar = GameObject.FindWithTag("HealthBar").GetComponent<HealthBar>();
-        healthBar.Hide();
 
         // gets player manager
         playerManager = PhotonView.Find((int)pv.InstantiationData[0]).GetComponent<PlayerManager>();
