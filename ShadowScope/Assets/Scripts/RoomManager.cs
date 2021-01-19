@@ -9,16 +9,19 @@ public class RoomManager : MonoBehaviourPunCallbacks
 {
     public static RoomManager Instance;
 
+    private int nextTeamNumber; // oscillates between 0 and 1 for assigning team values
+
     void Awake()
     {
         // standard Singleton pattern
-        if(Instance)
+        if (Instance)
         {
             Destroy(gameObject);
             return;
         }
         DontDestroyOnLoad(gameObject);
         Instance = this;
+        nextTeamNumber = -1;
     }
 
     public override void OnEnable()
@@ -42,13 +45,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
     }
 
-    void Start()
+    // returns next team number (0 or 1) and increments
+    public int GetNextTeamNumber()
     {
-        
-    }
-
-    void Update()
-    {
-        
+        return ++nextTeamNumber % 2;
     }
 }

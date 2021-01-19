@@ -15,6 +15,11 @@ public class PlayerController : MonoBehaviour
     float moveLimiter = 0.7f; // limit diagonal speed
     float rotationSpeed = 100f;
 
+    public SpriteRenderer spriteRenderer;
+    public Sprite redTeam;
+    public Sprite blueTeam;
+
+    [Header("Movement")]
     [SerializeField] float walkSpeed;
     [SerializeField] float sprintSpeed;
     public bool sprinting = false;
@@ -28,9 +33,8 @@ public class PlayerController : MonoBehaviour
     //Laserstuff:
     public float fireRate = 0.25f;
     public float weaponRange = 10000f;
-    private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);
-    private float nextFire;
-
+    private float shotDuration = 0.07f; // how long the bullet trail is enabled
+    private float nextFire; // amount of time before next fire is allowed
 
     void Awake()
     {
@@ -39,6 +43,7 @@ public class PlayerController : MonoBehaviour
 
         // gets player manager
         playerManager = PhotonView.Find((int)pv.InstantiationData[0]).GetComponent<PlayerManager>();
+
     }
 
     void Start()
@@ -50,6 +55,8 @@ public class PlayerController : MonoBehaviour
         }
         walkSpeed = 7.0f;
         sprintSpeed = 15.0f;
+
+        StartCoroutine(SetSprite()); // set the sprite for the team
     }
 
     void Update()
@@ -118,11 +125,17 @@ public class PlayerController : MonoBehaviour
 
         if (hit) // if hit something
         {
-            // if hit a player
-            if(hit.collider.tag == "Player")
+            // hit a player?
+            if (hit.collider.tag == "Player")
             {
-                // deal damage
-                hit.collider.gameObject.GetComponent<PlayerController>().TakeDamage(10.0f);
+                PlayerController hitPC = hit.collider.gameObject.GetComponent<PlayerController>();
+
+                // hit someone on other team?
+                if (hitPC.playerManager.team != playerManager.team)
+                {
+                    // deal damage
+                    hitPC.TakeDamage(10.0f);
+                }
             }
 
             // assign endPoint
@@ -149,24 +162,19 @@ public class PlayerController : MonoBehaviour
     [PunRPC]
     void RPC_ShootLine(Vector3 startPos, Vector3 endPos)
     {
-        StartCoroutine(ShotEffect(startPos, endPos));
+        ShotEffect(startPos, endPos);
     }
 
     // draws line from startPos to endPos for a given amount of time
-    private IEnumerator ShotEffect(Vector3 startPos, Vector3 endPos)
+    private void ShotEffect(Vector3 startPos, Vector3 endPos)
     {
         // instantiate and initialize LineRenderer prefab
         LineRenderer laserGO = Instantiate(laserLinePrefab);
         laserGO.SetPosition(0, startPos);
         laserGO.SetPosition(1, endPos);
 
-        // enable and disable LineRenderer for given amount of time
-        laserGO.enabled = true;
-        yield return shotDuration;
-        laserGO.enabled = false;
-
         // destroy instantiated LineRenderer
-        Destroy(laserGO);
+        Destroy(laserGO.gameObject, shotDuration);
     }
 
 
@@ -187,8 +195,27 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Took damage.");
         Debug.Log("Current HP: " + currHealth);
 
-        if(currHealth <= 0)
+        if (currHealth <= 0)
             Die();
+    }
+
+    IEnumerator SetSprite()
+    {
+        yield return new WaitForSeconds(0.4f);
+        if (playerManager.team == 0)
+        {
+            Debug.Log("Team color set to: red");
+            spriteRenderer.sprite = redTeam;
+        }
+        else if (playerManager.team == 1)
+        {
+            Debug.Log("Team color set to: blue");
+            spriteRenderer.sprite = blueTeam;
+        }
+        else
+        {
+            Debug.LogError("ERROR: unknown team number, cannot assign player sprite");
+        }
     }
 
     void Die()
