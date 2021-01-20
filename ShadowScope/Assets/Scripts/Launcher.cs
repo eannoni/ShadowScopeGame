@@ -10,6 +10,9 @@ public class Launcher : MonoBehaviourPunCallbacks //gives access to callbacks fo
 {
     public static Launcher Instance;
 
+    [SerializeField] TMP_InputField nicknameInputField;
+    [SerializeField] TMP_Text nameSetText;
+
     [SerializeField] TMP_InputField roomNameInputField;
     [SerializeField] TMP_Text errorText;
     [SerializeField] TMP_Text roomNameText;
@@ -42,6 +45,24 @@ public class Launcher : MonoBehaviourPunCallbacks //gives access to callbacks fo
         PhotonNetwork.JoinLobby();
         // automatically loads scenes for all other clients when host changes scenes
         PhotonNetwork.AutomaticallySyncScene = true;
+    }
+
+    public void SetNickname()
+    {
+        if (!string.IsNullOrEmpty(nicknameInputField.text))
+        {
+            PhotonNetwork.NickName = nicknameInputField.text;
+            StartCoroutine(SetNicknameText());
+        }
+    }
+
+    // displays nickname successful text briefly
+    IEnumerator SetNicknameText()
+    {
+        nameSetText.text = "Name set to \"" + PhotonNetwork.NickName + "\".";
+        nameSetText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(3.0f);
+        nameSetText.gameObject.SetActive(false);
     }
 
     public override void OnJoinedLobby()
