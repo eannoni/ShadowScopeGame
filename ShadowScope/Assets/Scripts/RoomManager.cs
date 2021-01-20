@@ -45,6 +45,26 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public void DisconnectPlayer()
+    {
+        StartCoroutine(DisconnectAndLoad());
+    }
+
+    IEnumerator DisconnectAndLoad()
+    {
+        Debug.Log("Disconnecting...");
+        //PhotonNetwork.Disconnect();
+        PhotonNetwork.LeaveRoom();
+        //while (PhotonNetwork.IsConnected)
+        while(PhotonNetwork.InRoom)
+            yield return null;
+
+        Debug.Log("Disconnected");
+        OnDisable();
+        SceneManager.LoadScene(0);
+        Debug.Log("Scene Loaded");
+    }
+
     // returns next team number (0 or 1) and increments
     public int GetNextTeamNumber()
     {
