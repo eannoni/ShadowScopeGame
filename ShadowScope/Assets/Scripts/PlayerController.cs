@@ -27,10 +27,18 @@ public class PlayerController : MonoBehaviour
 
     //Laserstuff:
     public float fireRate = 0.25f;
+<<<<<<< Updated upstream
     public float weaponRange = 10000f;
     private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);
     private float nextFire;
 
+=======
+    public float weaponRange = 1000f;
+    public GameObject moveLight;
+    public GameObject muzzleFlash;
+    private float shotDuration = 0.07f; // how long the bullet trail is enabled
+    private float nextFire; // amount of time before next fire is allowed
+>>>>>>> Stashed changes
 
     void Awake()
     {
@@ -92,6 +100,11 @@ public class PlayerController : MonoBehaviour
     // Movement mechanics can be reworked, this is just for temporary testing purposes
     void Move()
     {
+        if (horizontal != 0 || vertical != 0)
+        {
+            moveLight.SetActive(true);
+        }
+
         if (horizontal != 0 && vertical != 0) // if moving diagonally
         {
             // limit diagonal movement to move at 70% speed
@@ -99,10 +112,25 @@ public class PlayerController : MonoBehaviour
             vertical *= moveLimiter;
         }
 
+<<<<<<< Updated upstream
         if (sprinting)
             body.velocity = new Vector2(horizontal * sprintSpeed, vertical * sprintSpeed);
+=======
+        if (horizontal == 0 && vertical == 0)
+        {
+            moveLight.SetActive(false);
+        }
+
+        if (crouching)
+            body.velocity = new Vector2(horizontal * crouchSpeed, vertical * crouchSpeed);
+>>>>>>> Stashed changes
         else
             body.velocity = new Vector2(horizontal * walkSpeed, vertical * walkSpeed);
+    }
+
+    void MuzzleLight()
+    {
+        muzzleFlash.SetActive(false);
     }
 
     void Shoot()
@@ -112,6 +140,10 @@ public class PlayerController : MonoBehaviour
 
         // create raycast
         RaycastHit2D hit = Physics2D.Raycast(firePoint.position, mousePos);
+        
+        muzzleFlash.SetActive(true);
+        Invoke("MuzzleLight", 0.03f);
+
 
         // assign startPoint
         startPoint = laserFirePoint.position;
