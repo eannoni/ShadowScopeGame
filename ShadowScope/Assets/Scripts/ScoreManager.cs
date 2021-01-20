@@ -10,16 +10,16 @@ public class ScoreManager : MonoBehaviour
     public Menu scoreMenu;
     public Menu winnerMenu;
 
-    public TMP_Text redLivesText;
-    public TMP_Text blueLivesText;
+    public TMP_Text redKillsText;
+    public TMP_Text blueKillsText;
 
     public TMP_Text redWinText;
     public TMP_Text blueWinText;
 
-    public int redLives;
-    public int blueLives;
+    public int redKills;
+    public int blueKills;
 
-    public const int maxLives = 3;
+    public const int killsNeeded = 15;
 
     void Awake()
     {
@@ -37,31 +37,31 @@ public class ScoreManager : MonoBehaviour
     {
         MenuManager.Instance.OpenMenu(scoreMenu);
 
-        redLives = maxLives;
-        blueLives = maxLives;
+        redKills = 0;
+        blueKills = 0;
         SetScoreText();
     }
 
     public bool IsWinner()
     {
-        if (redLives <= 0 || blueLives <= 0)
+        if (redKills >= killsNeeded || blueKills >= killsNeeded)
             return true;
         return false;
     }
 
     public void SetScoreText()
     {
-        redLivesText.text = "Red Lives: " + redLives;
-        blueLivesText.text = "Blue Lives: " + blueLives;
+        redKillsText.text = "Red Kills: " + redKills + " / " + killsNeeded;
+        blueKillsText.text = "Blue Kills: " + blueKills + " / " + killsNeeded;
     }
 
     public void DisplayWinner()
     {
         MenuManager.Instance.OpenMenu(winnerMenu);
 
-        if (redLives <= 0)
-            blueWinText.gameObject.SetActive(true);
-        else
+        if (redKills >= killsNeeded)
             redWinText.gameObject.SetActive(true);
+        else
+            blueWinText.gameObject.SetActive(true);
     }
 }

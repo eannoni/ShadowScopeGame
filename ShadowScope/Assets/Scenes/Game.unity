@@ -207,7 +207,7 @@ GameObject:
   - component: {fileID: 106657932}
   - component: {fileID: 106657931}
   m_Layer: 5
-  m_Name: BlueLivesText
+  m_Name: BlueKillsText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -232,7 +232,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Blue Lives: 00'
+  m_text: 'Blue Kills: 00/00'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -509,12 +509,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreMenu: {fileID: 530108170}
   winnerMenu: {fileID: 697523870}
-  redLivesText: {fileID: 1545428672}
-  blueLivesText: {fileID: 106657931}
+  redKillsText: {fileID: 1545428672}
+  blueKillsText: {fileID: 106657931}
   redWinText: {fileID: 756075389}
   blueWinText: {fileID: 1801487863}
-  redLives: 0
-  blueLives: 0
+  redKills: 0
+  blueKills: 0
 --- !u!4 &209719487
 Transform:
   m_ObjectHideFlags: 0
@@ -39391,7 +39391,7 @@ GameObject:
   - component: {fileID: 1545428671}
   - component: {fileID: 1545428672}
   m_Layer: 5
-  m_Name: RedLivesText
+  m_Name: RedKillsText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -39443,7 +39443,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Red Lives: 00'
+  m_text: 'Red Kills: 00/00'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

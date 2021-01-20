@@ -19,15 +19,12 @@ public class PlayerManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("In PlayerManager Start");
-
         // assign teams
         team = -1;
         PV.RPC("RPC_GetTeam", RpcTarget.MasterClient);
 
         if (PV.IsMine) // if PhotonView is owned by the local player
         {
-            Debug.Log("Creating Controller");
             CreateController();
         }
     }
@@ -48,14 +45,14 @@ public class PlayerManager : MonoBehaviour
 
         // set score
         if(team == 0)
-            ScoreManager.Instance.redLives--;
+            ScoreManager.Instance.blueKills++;
         else
-            ScoreManager.Instance.blueLives--;
+            ScoreManager.Instance.redKills++;
 
         bool isWinner = ScoreManager.Instance.IsWinner();
 
         // update score on all clients
-        PV.RPC("RPC_SetScoreText", RpcTarget.All, ScoreManager.Instance.redLives, ScoreManager.Instance.blueLives, isWinner);
+        PV.RPC("RPC_SetScoreText", RpcTarget.All, ScoreManager.Instance.redKills, ScoreManager.Instance.blueKills, isWinner);
 
         CreateController();
     }
@@ -64,7 +61,6 @@ public class PlayerManager : MonoBehaviour
     [PunRPC]
     void RPC_GetTeam()
     {
-        Debug.Log("RPC GetTeam");
         team = RoomManager.Instance.GetNextTeamNumber();
         PV.RPC("RPC_SentTeam", RpcTarget.Others, team);
     }
@@ -73,18 +69,16 @@ public class PlayerManager : MonoBehaviour
     [PunRPC]
     void RPC_SentTeam(int whichTeam)
     {
-        Debug.Log("RPC SetTeam");
         team = whichTeam; // set the team number
-        Debug.Log("inside RPC SetTeam...team = " + team);
     }
 
     // sets new scores and if winner, queues winner menu
     [PunRPC]
-    void RPC_SetScoreText(int newRedLives, int newBlueLives, bool isWinner)
+    void RPC_SetScoreText(int redKills, int blueKills, bool isWinner)
     {
         // update scores
-        ScoreManager.Instance.redLives = newRedLives;
-        ScoreManager.Instance.blueLives = newBlueLives;
+        ScoreManager.Instance.redKills = redKills;
+        ScoreManager.Instance.blueKills = blueKills;
 
         // display scores
         ScoreManager.Instance.SetScoreText();
