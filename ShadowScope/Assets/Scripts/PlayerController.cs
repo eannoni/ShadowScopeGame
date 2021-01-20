@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     public Sprite redTeam;
     public Sprite blueTeam;
 
+    public GameObject moveLight; // Light for when you're moving
+
     [SerializeField] float walkSpeed;
     [SerializeField] float crouchSpeed;
     public bool crouching = false;
@@ -40,6 +42,7 @@ public class PlayerController : MonoBehaviour
     public int damage = 20;
     public float fireRate = 0.25f;
     public float weaponRange = 1000f;
+    public GameObject muzzleFlash; // Light for muzzle flash
     private float shotDuration = 0.07f; // how long the bullet trail is enabled
     private float nextFire; // amount of time before next fire is allowed
 
@@ -111,7 +114,6 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
     }
 
-
     // Movement mechanics can be reworked, this is just for temporary testing purposes
     void Move()
     {
@@ -122,10 +124,21 @@ public class PlayerController : MonoBehaviour
             vertical *= moveLimiter;
         }
 
+        moveLight.SetActive(true);
+        if (horizontal == 0 && vertical == 0)
+        {
+            moveLight.SetActive(false);
+        }
+
         if (crouching)
             body.velocity = new Vector2(horizontal * crouchSpeed, vertical * crouchSpeed);
         else
             body.velocity = new Vector2(horizontal * walkSpeed, vertical * walkSpeed);
+    }
+
+    void MuzzleStop()
+    {
+        muzzleFlash.SetActive(false);
     }
 
     void Shoot()
@@ -138,6 +151,9 @@ public class PlayerController : MonoBehaviour
 
         // assign startPoint
         startPoint = laserFirePoint.position;
+
+        muzzleFlash.SetActive(true); // Turns on muzzle flash
+        Invoke("MuzzleStop", 0.05f); // Flash duration
 
         if (hit) // if hit something
         {
