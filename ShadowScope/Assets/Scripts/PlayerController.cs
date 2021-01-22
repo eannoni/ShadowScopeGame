@@ -55,6 +55,8 @@ public class PlayerController : MonoBehaviour
         // gets player manager
         playerManager = PhotonView.Find((int)pv.InstantiationData[0]).GetComponent<PlayerManager>();
 
+        scoreManager = GameObject.FindGameObjectWithTag("ScoreManager").GetComponent<ScoreManager>();
+
     }
 
     void Start()
@@ -67,12 +69,13 @@ public class PlayerController : MonoBehaviour
         else
         {
             healthBar.SetMaxHealth(maxHealth);
+            healthBar.Show();
         }
+
+        SetSprite();
+
         walkSpeed = 10.0f;
         crouchSpeed = 5.0f;
-        StartCoroutine(SetSprite()); // set the sprite for the team
-
-        scoreManager = GameObject.FindGameObjectWithTag("ScoreManager").GetComponent<ScoreManager>();
     }
 
     void Update()
@@ -219,7 +222,6 @@ public class PlayerController : MonoBehaviour
     [PunRPC]
     void RPC_TakeDamage()
     {
-
         if (!pv.IsMine)
             return;
 
@@ -232,27 +234,14 @@ public class PlayerController : MonoBehaviour
             Die();
     }
 
-    IEnumerator SetSprite()
+    void SetSprite()
     {
-        yield return new WaitForSeconds(0.4f);
-
-        if (pv.IsMine)
-            healthBar.Show();
-
         if (playerManager.team == 0)
-        {
-            Debug.Log("Team color set to: red");
             spriteRenderer.sprite = redTeam;
-        }
         else if (playerManager.team == 1)
-        {
-            Debug.Log("Team color set to: blue");
             spriteRenderer.sprite = blueTeam;
-        }
         else
-        {
             Debug.LogError("ERROR: unknown team number, cannot assign player sprite");
-        }
     }
 
     void Die()

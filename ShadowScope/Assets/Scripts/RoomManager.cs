@@ -9,8 +9,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
 {
     public static RoomManager Instance;
 
-    private int nextTeamNumber; // oscillates between 0 and 1 for assigning team values
-
     void Awake()
     {
         // standard Singleton pattern
@@ -21,7 +19,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
         DontDestroyOnLoad(gameObject);
         Instance = this;
-        nextTeamNumber = -1;
     }
 
     public override void OnEnable()
@@ -45,6 +42,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
     }
 
+    // NOT CURRENTLY WORKING
     public void DisconnectPlayer()
     {
         StartCoroutine(DisconnectAndLoad());
@@ -64,11 +62,5 @@ public class RoomManager : MonoBehaviourPunCallbacks
         OnDisable();
         SceneManager.LoadScene(0);
         Debug.Log("Scene Loaded");
-    }
-
-    // returns next team number (0 or 1) and increments
-    public int GetNextTeamNumber()
-    {
-        return ++nextTeamNumber % 2;
     }
 }

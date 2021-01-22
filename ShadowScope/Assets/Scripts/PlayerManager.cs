@@ -19,14 +19,11 @@ public class PlayerManager : MonoBehaviour
 
     void Start()
     {
-        // assign teams
-        team = -1;
-        PV.RPC("RPC_GetTeam", RpcTarget.MasterClient);
+        // assign team
+        team = (int)PV.Owner.CustomProperties["Team"];
 
         if (PV.IsMine) // if PhotonView is owned by the local player
-        {
             CreateController();
-        }
     }
 
     // Instantiates our player controller
@@ -55,21 +52,6 @@ public class PlayerManager : MonoBehaviour
         PV.RPC("RPC_SetScoreText", RpcTarget.All, ScoreManager.Instance.redKills, ScoreManager.Instance.blueKills, isWinner);
 
         CreateController();
-    }
-
-    // set player's team number (to be sent only to the master client)
-    [PunRPC]
-    void RPC_GetTeam()
-    {
-        team = RoomManager.Instance.GetNextTeamNumber();
-        PV.RPC("RPC_SentTeam", RpcTarget.Others, team);
-    }
-
-    // broadcast players' team numbers to all other clients
-    [PunRPC]
-    void RPC_SentTeam(int whichTeam)
-    {
-        team = whichTeam; // set the team number
     }
 
     // sets new scores and if winner, queues winner menu
