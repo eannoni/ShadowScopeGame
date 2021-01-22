@@ -20,7 +20,8 @@ public class Launcher : MonoBehaviourPunCallbacks //gives access to callbacks fo
     [SerializeField] Transform roomListContent;
     [SerializeField] GameObject roomListItemPrefab;
 
-    [SerializeField] Transform playerListContent;
+    [SerializeField] Transform playerListContentRed;
+    [SerializeField] Transform playerListContentBlue;
     [SerializeField] GameObject PlayerListItemPrefab;
 
     [SerializeField] GameObject startGameButton;
@@ -75,7 +76,7 @@ public class Launcher : MonoBehaviourPunCallbacks //gives access to callbacks fo
     public void CreateRoom()
     {
         // make sure user doesn't generate room with empty name
-        if(string.IsNullOrEmpty(roomNameInputField.text))
+        if (string.IsNullOrEmpty(roomNameInputField.text))
         {
             return;
         }
@@ -89,21 +90,61 @@ public class Launcher : MonoBehaviourPunCallbacks //gives access to callbacks fo
         MenuManager.Instance.OpenMenu("room");
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
 
+        // force joining red team
+        JoinTeam(0);
+
+        RefreshRoomDisplay();
+    }
+
+    void RefreshRoomDisplay()
+    {
+        // clears all players in playerListContentRed
+        foreach (Transform child in playerListContentRed)
+            Destroy(child.gameObject);
+
+        // clears all players in playerListContentBlue
+        foreach (Transform child in playerListContentBlue)
+            Destroy(child.gameObject);
+
         Player[] players = PhotonNetwork.PlayerList;
 
-        // clears all players in playerListContent
-        foreach(Transform child in playerListContent)
-        {
-            Destroy(child.gameObject);
-        }
-
+        // adds players into respective team content fields
         for (int i = 0; i < players.Count(); ++i)
         {
-            Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
+            // if player has a Team custom property
+            if (players[i].CustomProperties.ContainsKey("Team"))
+            {
+                // if player is on red team, instantiate red PlayerListItemPrefab
+                if (players[i].CustomProperties["Team"].Equals(0))
+                    Instantiate(PlayerListItemPrefab, playerListContentRed).GetComponent<PlayerListItem>().SetUp(players[i]);
+                // if player is on blue team, instantiate blue PlayerListItemPrefab
+                else if (players[i].CustomProperties["Team"].Equals(1))
+                    Instantiate(PlayerListItemPrefab, playerListContentBlue).GetComponent<PlayerListItem>().SetUp(players[i]);
+                else
+                    Debug.Log("----Uh oh, player could not be put in a group");
+            }
         }
 
         // only lets the host be able to start the game
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+    }
+
+    // clicked by "Join Red/Blue Team" buttons
+    public void JoinTeam(int team)
+    {
+        // do we already have a team?
+        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("Team"))
+        {
+            // remove team property in order to trigger OnPlayerPropertiesUpdate
+            PhotonNetwork.RemovePlayerCustomProperties(new string[]{"Team"});
+        }
+
+        // set the player properties of this client to the team they clicked
+        ExitGames.Client.Photon.Hashtable playerProps = new ExitGames.Client.Photon.Hashtable();
+        playerProps.Add("Team", team);
+        PhotonNetwork.LocalPlayer.SetCustomProperties(playerProps);
+
+        RefreshRoomDisplay();
     }
 
     // called if there is a host migration, which is if host leaves, another player becomes host
@@ -148,7 +189,7 @@ public class Launcher : MonoBehaviourPunCallbacks //gives access to callbacks fo
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         // clear the list each update
-        foreach(Transform trans in roomListContent)
+        foreach (Transform trans in roomListContent)
         {
             Destroy(trans.gameObject);
         }
@@ -157,7 +198,7 @@ public class Launcher : MonoBehaviourPunCallbacks //gives access to callbacks fo
         for (int i = 0; i < roomList.Count; ++i)
         {
             // if roomListItem has been removed, don't instantiate
-            if(roomList[i].RemovedFromList)
+            if (roomList[i].RemovedFromList)
                 continue;
 
             Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(roomList[i]);
@@ -166,6 +207,17 @@ public class Launcher : MonoBehaviourPunCallbacks //gives access to callbacks fo
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
+        Instantiate(PlayerListItemPrefab, playerListContentRed).GetComponent<PlayerListItem>().SetUp(newPlayer);
+    }
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+    {
+        // find player that joined and update their properties (may not be necessary)
+        for (int i = 0; i < PhotonNetwork.PlayerList.Count(); ++i)
+        {
+            if (PhotonNetwork.PlayerList[i] == targetPlayer)
+                PhotonNetwork.PlayerList[i].CustomProperties = targetPlayer.CustomProperties;
+        }
+        RefreshRoomDisplay();
     }
 }
