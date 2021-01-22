@@ -183,7 +183,9 @@ MonoBehaviour:
   userName: {fileID: 8389646364607118993}
   firePoint: {fileID: 3751233944938023588}
   laserFirePoint: {fileID: 8529240615422210307}
-  laserLinePrefab: {fileID: 736312740818469446, guid: 54a740fa66a9d4de988a479bfc5633ce,
+  laserLinePrefabRed: {fileID: 736312740818469446, guid: 95930031cebde174a835d32a8bed94c3,
+    type: 3}
+  laserLinePrefabBlue: {fileID: 736312740818469446, guid: 54a740fa66a9d4de988a479bfc5633ce,
     type: 3}
   spriteRenderer: {fileID: 2263012571393486352}
   redTeam: {fileID: 21300000, guid: e6d4eb09151bf9f4a9bf56b5f1636cfa, type: 3}

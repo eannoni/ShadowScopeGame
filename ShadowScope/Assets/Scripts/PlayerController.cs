@@ -15,7 +15,8 @@ public class PlayerController : MonoBehaviour
 
     public Transform firePoint;
     public Transform laserFirePoint;
-    public LineRenderer laserLinePrefab;
+    public LineRenderer laserLinePrefabRed;
+    public LineRenderer laserLinePrefabBlue;
 
     float horizontal, vertical;
     float moveLimiter = 0.7f; // limit diagonal speed
@@ -207,12 +208,22 @@ public class PlayerController : MonoBehaviour
     private void ShotEffect(Vector3 startPos, Vector3 endPos)
     {
         // instantiate and initialize LineRenderer prefab
-        LineRenderer laserGO = Instantiate(laserLinePrefab);
-        laserGO.SetPosition(0, startPos);
-        laserGO.SetPosition(1, endPos);
+        if (playerManager.team == 0)
+        {
+            LineRenderer laserGO = Instantiate(laserLinePrefabRed);
+            laserGO.SetPosition(0, startPos);
+            laserGO.SetPosition(1, endPos);
+            Destroy(laserGO.gameObject, shotDuration);
+        }
+        else
+        {
+            LineRenderer laserGO = Instantiate(laserLinePrefabBlue);
+            laserGO.SetPosition(0, startPos);
+            laserGO.SetPosition(1, endPos);
 
-        // destroy instantiated LineRenderer
-        Destroy(laserGO.gameObject, shotDuration);
+            // destroy instantiated LineRenderer
+            Destroy(laserGO.gameObject, shotDuration);
+        }
     }
 
 
