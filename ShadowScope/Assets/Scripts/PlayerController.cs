@@ -249,10 +249,4 @@ public class PlayerController : MonoBehaviour
         Debug.Log("You died");
         playerManager.Die();
     }
-
-    void OnDestroy()
-    {
-        if(pv.IsMine)
-            healthBar.Hide();
-    }
 }
