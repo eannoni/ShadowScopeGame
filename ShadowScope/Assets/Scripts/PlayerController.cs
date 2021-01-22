@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     Rigidbody2D body;
     PhotonView pv;
 
-    HealthBar healthBar;
+    public HealthBar healthBar;
+    public TMP_Text userName;
 
     public Transform firePoint;
     public Transform laserFirePoint;
@@ -50,7 +52,6 @@ public class PlayerController : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         pv = GetComponent<PhotonView>();
-        healthBar = GameObject.FindWithTag("HealthBar").GetComponent<HealthBar>();
 
         // gets player manager
         playerManager = PhotonView.Find((int)pv.InstantiationData[0]).GetComponent<PlayerManager>();
@@ -61,18 +62,20 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        if (!pv.IsMine) // destroy cameras for all other players?
-        {
-            Destroy(GetComponentInChildren<Camera>().gameObject);
-            Destroy(body); // this prevents glitchy movement by destroying RigidBody calculations for all other players.
-        }
-        else
+        if (pv.IsMine)
         {
             healthBar.SetMaxHealth(maxHealth);
             healthBar.Show();
         }
+        else
+        {
+            Destroy(GetComponentInChildren<Camera>().gameObject);
+            Destroy(body); // this prevents glitchy movement by destroying RigidBody calculations for all other players.
+            healthBar.gameObject.SetActive(false);
+        }
 
         SetSprite();
+        SetUserName();
 
         walkSpeed = 10.0f;
         crouchSpeed = 5.0f;
@@ -242,6 +245,11 @@ public class PlayerController : MonoBehaviour
             spriteRenderer.sprite = blueTeam;
         else
             Debug.LogError("ERROR: unknown team number, cannot assign player sprite");
+    }
+
+    void SetUserName()
+    {
+        userName.text = pv.Owner.NickName;
     }
 
     void Die()
