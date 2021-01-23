@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2272535844016401193}
   - component: {fileID: 736312740818469446}
   m_Layer: 0
-  m_Name: LaserLine
+  m_Name: LaserLineBlue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

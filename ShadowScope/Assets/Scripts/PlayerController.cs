@@ -53,6 +53,14 @@ public class PlayerController : MonoBehaviour
     float nextFire; // amount of time before next fire is allowed
     Vector2 mousePos;
 
+    [Header("Sounds")]
+    public AudioClip[] ammoSounds;
+    public AudioClip[] deathSounds;
+    public AudioClip[] healthSounds;
+    public AudioClip[] hurtSounds;
+    public AudioClip[] shootSounds;
+    AudioSource source;
+
     void Awake()
     {
         body = GetComponent<Rigidbody2D>();
@@ -62,7 +70,7 @@ public class PlayerController : MonoBehaviour
         playerManager = PhotonView.Find((int)pv.InstantiationData[0]).GetComponent<PlayerManager>();
 
         scoreManager = GameObject.FindGameObjectWithTag("ScoreManager").GetComponent<ScoreManager>();
-
+        source = GetComponent<AudioSource>();
     }
 
     void Start()
@@ -123,12 +131,14 @@ public class PlayerController : MonoBehaviour
     public void CollectedHealthPickup(int id)
     {
         FullHeal();
+        source.PlayOneShot(healthSounds[Random.Range(0, healthSounds.Length)]);
         pv.RPC("RPC_DeactivatePickup", RpcTarget.All, id);
     }
 
     public void CollectedAmmoPickup(int id, int ammoPickupAmount)
     {
         GetAmmo(ammoPickupAmount);
+        source.PlayOneShot(ammoSounds[Random.Range(0, ammoSounds.Length)]);
         pv.RPC("RPC_DeactivatePickup", RpcTarget.All, id);
     }
 
@@ -228,6 +238,9 @@ public class PlayerController : MonoBehaviour
 
         // animate line
         ShootLine(startPoint, endPoint);
+
+        //shoot sound
+        source.PlayOneShot(shootSounds[Random.Range(0, shootSounds.Length)]);
     }
 
 
@@ -283,6 +296,8 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Damage dealt: " + damage);
         healthBar.SetHealth(currHealth);
         Debug.Log("Health after: " + currHealth);
+        if (currHealth > 0)
+            source.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length)]);
 
         if (currHealth <= 0)
             Die();
@@ -310,6 +325,7 @@ public class PlayerController : MonoBehaviour
 
     void Die()
     {
+        source.PlayOneShot(deathSounds[Random.Range(0, deathSounds.Length)]); //play a random death sound from the array
         Debug.Log("You died");
         playerManager.Die();
     }
