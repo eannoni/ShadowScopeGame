@@ -2,17 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using UnityEngine.UI;
 using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     Rigidbody2D body;
     PhotonView pv;
+    PlayerManager playerManager;
+    ScoreManager scoreManager;
+    public GameObject moveLight; // Light for when you're moving
 
+    [Header("HUD Components")]
     public HealthBar healthBar;
     public TMP_Text userName;
+    public GameObject ammoDisplay;
 
+    [Header("Shooting")]
     public Transform firePoint;
     public Transform laserFirePoint;
     public LineRenderer laserLinePrefabRed;
@@ -22,32 +27,31 @@ public class PlayerController : MonoBehaviour
     float moveLimiter = 0.7f; // limit diagonal speed
     float rotationSpeed = 100f;
 
-    public SpriteRenderer spriteRenderer;
+    [Header("Sprites")]
     public Sprite redTeam;
     public Sprite blueTeam;
 
-    public GameObject moveLight; // Light for when you're moving
-
+    [Header("Movement")]
     [SerializeField] float walkSpeed;
     [SerializeField] float crouchSpeed;
     public bool crouching = false;
 
-    const int maxHealth = 100;
-    int currHealth = maxHealth;
+    [Header("Health")]
+    [SerializeField] const int maxHealth = 4;
+    [SerializeField] int currHealth = maxHealth;
 
-    PlayerManager playerManager;
+    [Header("Ammo")]
+    [SerializeField] const int maxAmmo = 25;
+    [SerializeField] int currAmmo = 10;
 
-    ScoreManager scoreManager;
-
-    Vector2 mousePos;
-
-    //Laserstuff:
-    public int damage = 20;
-    public float fireRate = 0.25f;
+    [Header("Shooting")]
+    public int damage = 1;
+    public float fireRate = 0.3f;
     public float weaponRange = 1000f;
     public GameObject muzzleFlash; // Light for muzzle flash
-    private float shotDuration = 0.07f; // how long the bullet trail is enabled
-    private float nextFire; // amount of time before next fire is allowed
+    float shotDuration = 0.07f; // how long the bullet trail is enabled
+    float nextFire; // amount of time before next fire is allowed
+    Vector2 mousePos;
 
     void Awake()
     {
@@ -73,10 +77,12 @@ public class PlayerController : MonoBehaviour
             Destroy(GetComponentInChildren<Camera>().gameObject);
             Destroy(body); // this prevents glitchy movement by destroying RigidBody calculations for all other players.
             healthBar.gameObject.SetActive(false);
+            ammoDisplay.gameObject.SetActive(false);
         }
 
         SetSprite();
         SetUserName();
+        UpdateAmmoDisplay();
 
         walkSpeed = 10.0f;
         crouchSpeed = 5.0f;
@@ -96,10 +102,11 @@ public class PlayerController : MonoBehaviour
 
             mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            if (Input.GetButtonDown("Fire1") && Time.time > nextFire) // Left click fires
+            if (Input.GetButtonDown("Fire1") && Time.time > nextFire && currAmmo > 0) // Left click fires
             {
                 nextFire = Time.time + fireRate; //updating time when player can shoot next
-
+                currAmmo--;
+                UpdateAmmoDisplay();
                 Shoot();
             }
         }
@@ -107,10 +114,42 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!pv.IsMine) // only let the player control this one?
+        if (!pv.IsMine) // only let the player control this one
             return;
         Move();
         Rotate();
+    }
+
+    public void CollectedHealthPickup(int id)
+    {
+        FullHeal();
+        pv.RPC("RPC_DeactivatePickup", RpcTarget.All, id);
+    }
+
+    public void CollectedAmmoPickup(int id, int ammoPickupAmount)
+    {
+        GetAmmo(ammoPickupAmount);
+        pv.RPC("RPC_DeactivatePickup", RpcTarget.All, id);
+    }
+
+    public void FullHeal()
+    {
+        currHealth = maxHealth;
+        healthBar.SetHealth(currHealth);
+    }
+
+    public void GetAmmo(int ammo)
+    {
+        currAmmo += ammo;
+        if (currAmmo > maxAmmo)
+            currAmmo = maxAmmo;
+        UpdateAmmoDisplay();
+    }
+
+    [PunRPC]
+    void RPC_DeactivatePickup(int id)
+    {
+        PickupManager.Instance.DeactivatePickup(id);
     }
 
     void Rotate()
@@ -239,10 +278,11 @@ public class PlayerController : MonoBehaviour
         if (!pv.IsMine)
             return;
 
+        Debug.Log("Health before: " + currHealth);
         currHealth -= damage;
+        Debug.Log("Damage dealt: " + damage);
         healthBar.SetHealth(currHealth);
-        Debug.Log("Took damage.");
-        Debug.Log("Current HP: " + currHealth);
+        Debug.Log("Health after: " + currHealth);
 
         if (currHealth <= 0)
             Die();
@@ -251,9 +291,9 @@ public class PlayerController : MonoBehaviour
     void SetSprite()
     {
         if (playerManager.team == 0)
-            spriteRenderer.sprite = redTeam;
+            GetComponent<SpriteRenderer>().sprite = redTeam;
         else if (playerManager.team == 1)
-            spriteRenderer.sprite = blueTeam;
+            GetComponent<SpriteRenderer>().sprite = blueTeam;
         else
             Debug.LogError("ERROR: unknown team number, cannot assign player sprite");
     }
@@ -261,6 +301,11 @@ public class PlayerController : MonoBehaviour
     void SetUserName()
     {
         userName.text = pv.Owner.NickName;
+    }
+
+    void UpdateAmmoDisplay()
+    {
+        ammoDisplay.GetComponentInChildren<TMP_Text>().text = "x" + currAmmo;
     }
 
     void Die()
