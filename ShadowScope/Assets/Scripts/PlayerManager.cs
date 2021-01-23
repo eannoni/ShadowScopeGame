@@ -10,16 +10,17 @@ public class PlayerManager : MonoBehaviour
 
     GameObject controller;
 
-    public AudioClip victorySound;
-    public AudioClip loseSound;
-    public AudioSource audio;
+    //public AudioClip victorySound;
+    //public AudioClip loseSound;
+    //public AudioSource audio;
+    EndOfGame end;
 
     public int team; // 0: red, 1: blue
 
     void Awake()
     {
         PV = GetComponent<PhotonView>();
-        audio = GetComponent<AudioSource>();
+        //audio = GetComponent<AudioSource>();
     }
 
     void Start()
@@ -79,32 +80,8 @@ public class PlayerManager : MonoBehaviour
         if (isWinner)
         {
             ScoreManager.Instance.DisplayWinner();
-            if (team == 0)
-            {
-                if (ScoreManager.Instance.IsWinner() == 0)
-                {
-                    Debug.Log("Red team win");
-                    audio.PlayOneShot(victorySound);
-                }
-                else
-                {
-                    Debug.Log("Red team loss");
-                    audio.PlayOneShot(loseSound);
-                }
-            }
-            else
-            {
-                if (ScoreManager.Instance.IsWinner() == 1)
-                {
-                    Debug.Log("Blue team win");
-                    audio.PlayOneShot(victorySound);
-                }
-                else
-                {
-                    Debug.Log("Blue team loss");
-                    audio.PlayOneShot(loseSound);
-                }
-            }
+            end.SetWinner(ScoreManager.Instance.IsWinner());
+            end.EndGameSounds();
         }
     }
 }
