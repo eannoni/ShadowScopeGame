@@ -59,6 +59,8 @@ public class PlayerController : MonoBehaviour
     public AudioClip[] healthSounds;
     public AudioClip[] hurtSounds;
     public AudioClip[] shootSounds;
+    public AudioClip healthPickup;
+    public AudioClip ammoPickup;
     AudioSource source;
 
     void Awake()
@@ -112,6 +114,8 @@ public class PlayerController : MonoBehaviour
 
             if (Input.GetButtonDown("Fire1") && Time.time > nextFire && currAmmo > 0) // Left click fires
             {
+                //shoot sound
+                source.PlayOneShot(shootSounds[0]);
                 nextFire = Time.time + fireRate; //updating time when player can shoot next
                 currAmmo--;
                 UpdateAmmoDisplay();
@@ -131,6 +135,7 @@ public class PlayerController : MonoBehaviour
     public void CollectedHealthPickup(int id)
     {
         FullHeal();
+        source.PlayOneShot(healthPickup);
         source.PlayOneShot(healthSounds[Random.Range(0, healthSounds.Length)]);
         pv.RPC("RPC_DeactivatePickup", RpcTarget.All, id);
     }
@@ -138,6 +143,7 @@ public class PlayerController : MonoBehaviour
     public void CollectedAmmoPickup(int id, int ammoPickupAmount)
     {
         GetAmmo(ammoPickupAmount);
+        source.PlayOneShot(ammoPickup);
         source.PlayOneShot(ammoSounds[Random.Range(0, ammoSounds.Length)]);
         pv.RPC("RPC_DeactivatePickup", RpcTarget.All, id);
     }
@@ -238,9 +244,6 @@ public class PlayerController : MonoBehaviour
 
         // animate line
         ShootLine(startPoint, endPoint);
-
-        //shoot sound
-        source.PlayOneShot(shootSounds[0]);
     }
 
 

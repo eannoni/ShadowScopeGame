@@ -239,6 +239,8 @@ MonoBehaviour:
   shootSounds:
   - {fileID: 8300000, guid: 0d1af422d8c6d99418f02ca2710b0db2, type: 3}
   - {fileID: 8300000, guid: 0d06ff0bc37a50d458abecf743c8c387, type: 3}
+  healthPickup: {fileID: 8300000, guid: 02d2affb396974e85b06b20e77fe322d, type: 3}
+  ammoPickup: {fileID: 8300000, guid: 106b38957f8da4166a029c6d8d03fa8f, type: 3}
 --- !u!114 &7602163196266267859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -344,7 +346,7 @@ MonoBehaviour:
   - {x: 0.09208709, y: 0.1431843, z: 0}
   m_ShapePathHash: -1338343565
   m_Mesh: {fileID: 0}
-  m_InstanceId: 38842
+  m_InstanceId: 39918
 --- !u!82 &431949409081048265
 AudioSource:
   m_ObjectHideFlags: 0

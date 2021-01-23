@@ -10,11 +10,16 @@ public class PlayerManager : MonoBehaviour
 
     GameObject controller;
 
+    public AudioClip victorySound;
+    public AudioClip loseSound;
+    public AudioSource audio;
+
     public int team; // 0: red, 1: blue
 
     void Awake()
     {
         PV = GetComponent<PhotonView>();
+        audio = GetComponent<AudioSource>();
     }
 
     void Start()
@@ -66,6 +71,26 @@ public class PlayerManager : MonoBehaviour
         ScoreManager.Instance.SetScoreText();
 
         if (isWinner)
+        {
             ScoreManager.Instance.DisplayWinner();
+            if (team == 0)
+            {
+                if (redKills >= 15)
+                {
+                    audio.PlayOneShot(victorySound);
+                }
+                else
+                    audio.PlayOneShot(loseSound);
+            }
+            else
+            {
+                if(blueKills >= 15)
+                {
+                    audio.PlayOneShot(victorySound);
+                }
+                else
+                    audio.PlayOneShot(loseSound);
+            }
+        }
     }
 }
