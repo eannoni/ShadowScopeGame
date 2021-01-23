@@ -32,7 +32,6 @@ public class PlayerManager : MonoBehaviour
             end.isRedTeam = true;
         else
             end.isRedTeam = false;
-        Debug.Log(team);
 
         if (PV.IsMine) // if PhotonView is owned by the local player
             CreateController();
@@ -58,24 +57,19 @@ public class PlayerManager : MonoBehaviour
         else
             ScoreManager.Instance.redKills++;
 
-        bool isWinner;
-        if (ScoreManager.Instance.IsWinner() > -1)
-            isWinner = true;
-        else
-            isWinner = false;
-
-
+        int winner = ScoreManager.Instance.IsWinner();
 
         // update score on all clients
-        PV.RPC("RPC_SetScoreText", RpcTarget.All, ScoreManager.Instance.redKills, ScoreManager.Instance.blueKills, isWinner);
+        PV.RPC("RPC_SetScoreText", RpcTarget.All, ScoreManager.Instance.redKills, ScoreManager.Instance.blueKills, winner);
 
         CreateController();
     }
 
     // sets new scores and if winner, queues winner menu
     [PunRPC]
-    void RPC_SetScoreText(int redKills, int blueKills, bool isWinner)
+    void RPC_SetScoreText(int redKills, int blueKills, int winner)
     {
+        Debug.Log("In RPC_SetScoreText...PV is mine: " + PV.IsMine);
         // update scores
         ScoreManager.Instance.redKills = redKills;
         ScoreManager.Instance.blueKills = blueKills;
@@ -84,10 +78,10 @@ public class PlayerManager : MonoBehaviour
         ScoreManager.Instance.SetScoreText();
         Debug.Log(team);
 
-        if (isWinner)
+        if (winner > -1)
         {
             ScoreManager.Instance.DisplayWinner();
-            end.SetWinner(ScoreManager.Instance.IsWinner());
+            end.SetWinner(winner);
             end.EndGameSounds();
         }
     }

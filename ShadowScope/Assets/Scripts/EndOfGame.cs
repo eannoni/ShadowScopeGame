@@ -10,11 +10,12 @@ public class EndOfGame : MonoBehaviour
     public AudioClip loseSound;
     public AudioClip victory;
     public AudioSource source;
-    // Start is called before the first frame update
+
     void Awake()
     {
         source = GetComponent<AudioSource>();
     }
+
     public void SetWinner(int winner)
     {
         if (winner == 0)
@@ -22,6 +23,7 @@ public class EndOfGame : MonoBehaviour
         else
             isRedWinner = false;
     }
+
     public void EndGameSounds()
     {
         if (isRedTeam)
