@@ -21,12 +21,18 @@ public class PlayerManager : MonoBehaviour
     {
         PV = GetComponent<PhotonView>();
         //audio = GetComponent<AudioSource>();
+        end = GetComponentInChildren<EndOfGame>();
     }
 
     void Start()
     {
         // assign team
         team = (int)PV.Owner.CustomProperties["Team"];
+        if (team == 0)
+            end.isRedTeam = true;
+        else
+            end.isRedTeam = false;
+        Debug.Log(team);
 
         if (PV.IsMine) // if PhotonView is owned by the local player
             CreateController();
@@ -76,6 +82,7 @@ public class PlayerManager : MonoBehaviour
 
         // display scores
         ScoreManager.Instance.SetScoreText();
+        Debug.Log(team);
 
         if (isWinner)
         {

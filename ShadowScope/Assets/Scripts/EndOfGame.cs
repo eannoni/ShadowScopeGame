@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EndOfGame : MonoBehaviour
 {
-    bool isRedTeam;
+    public bool isRedTeam;
     bool isRedWinner;
     public PlayerManager playerManager;
     public AudioClip loseSound;
@@ -14,10 +14,6 @@ public class EndOfGame : MonoBehaviour
     void Awake()
     {
         source = GetComponent<AudioSource>();
-        if (playerManager.team == 0)
-            isRedTeam = true;
-        else
-            isRedTeam = false;
     }
     public void SetWinner(int winner)
     {

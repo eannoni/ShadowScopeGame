@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0deb3e78249858a4ea01d49301f1069d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isRedTeam: 0
   playerManager: {fileID: 7823451531725187652}
   loseSound: {fileID: 8300000, guid: bd85387cf18fa44a594fe386ec5c0428, type: 3}
   victory: {fileID: 8300000, guid: 8f4670985e3b39047aeb30e40b0b2f69, type: 3}
@@ -212,9 +213,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fac1d58de467e4cc69630863c1935413, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  victorySound: {fileID: 8300000, guid: 8f4670985e3b39047aeb30e40b0b2f69, type: 3}
-  loseSound: {fileID: 8300000, guid: bd85387cf18fa44a594fe386ec5c0428, type: 3}
-  audio: {fileID: 0}
   team: 0
 --- !u!82 &7114815021851902378
 AudioSource:
