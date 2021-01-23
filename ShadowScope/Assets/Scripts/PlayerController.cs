@@ -7,6 +7,7 @@ using TMPro;
 public class PlayerController : MonoBehaviour
 {
     Rigidbody2D body;
+    CircleCollider2D collider;
     PhotonView pv;
     PlayerManager playerManager;
     ScoreManager scoreManager;
@@ -39,6 +40,7 @@ public class PlayerController : MonoBehaviour
     [Header("Health")]
     [SerializeField] const int maxHealth = 4;
     [SerializeField] int currHealth = maxHealth;
+    bool isDead = false;
 
     [Header("Ammo")]
     [SerializeField] const int maxAmmo = 25;
@@ -66,6 +68,7 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         body = GetComponent<Rigidbody2D>();
+        collider = GetComponent<CircleCollider2D>();
         pv = GetComponent<PhotonView>();
 
         // gets player manager
@@ -103,7 +106,7 @@ public class PlayerController : MonoBehaviour
         if (!pv.IsMine) // only let the player control this one?
             return;
 
-        if (scoreManager.IsWinner() == -1)
+        if (scoreManager.IsWinner() == -1 && !isDead)
         {
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
@@ -228,7 +231,7 @@ public class PlayerController : MonoBehaviour
                 if (hitPC.playerManager.team != playerManager.team)
                 {
                     // deal damage
-                    hitPC.TakeDamage();
+                    hitPC.TakeDamage(userName.text);
                 }
             }
 
@@ -283,7 +286,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-    public void TakeDamage()
+    public void TakeDamage(string killerName)
     {
         pv.RPC("RPC_TakeDamage", RpcTarget.All);
     }
@@ -303,7 +306,17 @@ public class PlayerController : MonoBehaviour
             source.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length)]);
 
         if (currHealth <= 0)
+        {
+            DeactivateBeforeDeath();
+            pv.RPC("RPC_DieInstantlyOnOthers", RpcTarget.Others);
             Die();
+        }
+    }
+
+    [PunRPC]
+    void RPC_DieInstantlyOnOthers()
+    {
+        gameObject.SetActive(false);
     }
 
     void SetSprite()
@@ -329,7 +342,17 @@ public class PlayerController : MonoBehaviour
     void Die()
     {
         source.PlayOneShot(deathSounds[Random.Range(0, deathSounds.Length)]); //play a random death sound from the array
-        Debug.Log("You died");
         playerManager.Die();
+    }
+
+    void DeactivateBeforeDeath()
+    {
+        isDead = true;
+        healthBar.gameObject.SetActive(false);
+        userName.gameObject.SetActive(false);
+        ammoDisplay.gameObject.SetActive(false);
+        body.Sleep();
+        collider.enabled = false;
+        GetComponent<SpriteRenderer>().enabled = false;
     }
 }

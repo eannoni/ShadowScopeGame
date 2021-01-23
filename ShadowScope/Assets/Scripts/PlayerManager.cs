@@ -17,6 +17,8 @@ public class PlayerManager : MonoBehaviour
 
     public int team; // 0: red, 1: blue
 
+    private float respawnTime = 3f;
+
     void Awake()
     {
         PV = GetComponent<PhotonView>();
@@ -43,16 +45,16 @@ public class PlayerManager : MonoBehaviour
         // get spawnpoint from SpawnManager
         Transform spawnpoint = SpawnManager.Instance.GetSpawnpoint(team);
         // instantiate controller
-        controller = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerController"), spawnpoint.position, spawnpoint.rotation, 0, new object[] { PV.ViewID });
+        controller = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerController"), spawnpoint.position, Quaternion.identity, 0, new object[] { PV.ViewID });
     }
 
     // destroy controller and re-instantiate it
     public void Die()
     {
-        PhotonNetwork.Destroy(controller);
+        StartCoroutine(DelayedDeath());
 
         // set score
-        if(team == 0)
+        if (team == 0)
             ScoreManager.Instance.blueKills++;
         else
             ScoreManager.Instance.redKills++;
@@ -65,7 +67,13 @@ public class PlayerManager : MonoBehaviour
         // display winner and play sounds
         if(winner > -1)
             PV.RPC("RPC_EndGame", RpcTarget.All, winner);
+    }
 
+    IEnumerator DelayedDeath()
+    {
+        yield return new WaitForSeconds(respawnTime);
+
+        PhotonNetwork.Destroy(controller);
         CreateController();
     }
 
