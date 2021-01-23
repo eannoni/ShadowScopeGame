@@ -19,7 +19,7 @@ public class ScoreManager : MonoBehaviour
     public int redKills;
     public int blueKills;
 
-    public const int killsNeeded = 2;
+    public const int killsNeeded = 5;
 
     void Awake()
     {
