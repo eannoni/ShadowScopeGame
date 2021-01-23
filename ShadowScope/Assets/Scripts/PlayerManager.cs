@@ -71,7 +71,7 @@ public class PlayerManager : MonoBehaviour
 
     // sets new scores and if winner, queues winner menu
     [PunRPC]
-    void RPC_SetScoreText(int redKills, int blueKills, int winner)
+    void RPC_SetScoreText(int redKills, int blueKills)
     {
         // update scores
         ScoreManager.Instance.redKills = redKills;
