@@ -24,33 +24,13 @@ public class EndOfGame : MonoBehaviour
             isRedWinner = false;
     }
 
-    public void EndGameSounds()
+    public void EndGameWinSound()
     {
-        if (isRedTeam)
-        {
-            if (isRedWinner)
-            {
-                Debug.Log("Red team win");
-                source.PlayOneShot(victory);
-            }
-            else
-            {
-                Debug.Log("Red team loss");
-                source.PlayOneShot(loseSound);
-            }
-        }
-        else
-        {
-            if (!isRedWinner)
-            {
-                Debug.Log("Blue team win");
-                source.PlayOneShot(victory);
-            }
-            else
-            {
-                Debug.Log("Blue team loss");
-                source.PlayOneShot(loseSound);
-            }
-        }
+        source.PlayOneShot(victory);
+    }
+
+    public void EndGameLoseSound()
+    {
+        source.PlayOneShot(loseSound);
     }
 }

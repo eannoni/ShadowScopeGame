@@ -60,7 +60,11 @@ public class PlayerManager : MonoBehaviour
         int winner = ScoreManager.Instance.IsWinner();
 
         // update score on all clients
-        PV.RPC("RPC_SetScoreText", RpcTarget.All, ScoreManager.Instance.redKills, ScoreManager.Instance.blueKills, winner);
+        PV.RPC("RPC_SetScoreText", RpcTarget.All, ScoreManager.Instance.redKills, ScoreManager.Instance.blueKills);
+
+        // display winner and play sounds
+        if(winner > -1)
+            PV.RPC("RPC_EndGame", RpcTarget.All, winner);
 
         CreateController();
     }
@@ -69,20 +73,22 @@ public class PlayerManager : MonoBehaviour
     [PunRPC]
     void RPC_SetScoreText(int redKills, int blueKills, int winner)
     {
-        Debug.Log("In RPC_SetScoreText...PV is mine: " + PV.IsMine);
         // update scores
         ScoreManager.Instance.redKills = redKills;
         ScoreManager.Instance.blueKills = blueKills;
 
         // display scores
         ScoreManager.Instance.SetScoreText();
-        Debug.Log(team);
+    }
 
-        if (winner > -1)
-        {
-            ScoreManager.Instance.DisplayWinner();
-            end.SetWinner(winner);
-            end.EndGameSounds();
-        }
+    [PunRPC]
+    void RPC_EndGame(int winner)
+    {
+        ScoreManager.Instance.DisplayWinner();
+
+        if (team == winner)
+            end.EndGameWinSound();
+        else
+            end.EndGameLoseSound();
     }
 }
