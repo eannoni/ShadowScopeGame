@@ -51,7 +51,13 @@ public class PlayerManager : MonoBehaviour
         else
             ScoreManager.Instance.redKills++;
 
-        bool isWinner = ScoreManager.Instance.IsWinner();
+        bool isWinner;
+        if (ScoreManager.Instance.IsWinner() > -1)
+            isWinner = true;
+        else
+            isWinner = false;
+
+
 
         // update score on all clients
         PV.RPC("RPC_SetScoreText", RpcTarget.All, ScoreManager.Instance.redKills, ScoreManager.Instance.blueKills, isWinner);
@@ -75,21 +81,29 @@ public class PlayerManager : MonoBehaviour
             ScoreManager.Instance.DisplayWinner();
             if (team == 0)
             {
-                if (redKills >= 15)
+                if (ScoreManager.Instance.IsWinner() == 0)
                 {
+                    Debug.Log("Red team win");
                     audio.PlayOneShot(victorySound);
                 }
                 else
+                {
+                    Debug.Log("Red team loss");
                     audio.PlayOneShot(loseSound);
+                }
             }
             else
             {
-                if(blueKills >= 15)
+                if (ScoreManager.Instance.IsWinner() == 1)
                 {
+                    Debug.Log("Blue team win");
                     audio.PlayOneShot(victorySound);
                 }
                 else
+                {
+                    Debug.Log("Blue team loss");
                     audio.PlayOneShot(loseSound);
+                }
             }
         }
     }

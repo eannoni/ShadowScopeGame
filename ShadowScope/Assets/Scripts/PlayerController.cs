@@ -103,7 +103,7 @@ public class PlayerController : MonoBehaviour
         if (!pv.IsMine) // only let the player control this one?
             return;
 
-        if (!scoreManager.IsWinner())
+        if (scoreManager.IsWinner() == -1)
         {
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");

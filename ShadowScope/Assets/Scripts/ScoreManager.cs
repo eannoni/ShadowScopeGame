@@ -19,7 +19,7 @@ public class ScoreManager : MonoBehaviour
     public int redKills;
     public int blueKills;
 
-    public const int killsNeeded = 15;
+    public const int killsNeeded = 2;
 
     void Awake()
     {
@@ -42,11 +42,13 @@ public class ScoreManager : MonoBehaviour
         SetScoreText();
     }
 
-    public bool IsWinner()
+    public int IsWinner()
     {
-        if (redKills >= killsNeeded || blueKills >= killsNeeded)
-            return true;
-        return false;
+        if (redKills >= killsNeeded)
+            return 0;
+        else if (blueKills >= killsNeeded)
+            return 1;
+        return -1;
     }
 
     public void SetScoreText()
