@@ -240,7 +240,7 @@ public class PlayerController : MonoBehaviour
         ShootLine(startPoint, endPoint);
 
         //shoot sound
-        source.PlayOneShot(shootSounds[Random.Range(0, shootSounds.Length)]);
+        source.PlayOneShot(shootSounds[0]);
     }
 
 

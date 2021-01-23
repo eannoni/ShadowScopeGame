@@ -205,11 +205,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 355817cc2d82f6b4d9c815dd34cb261a, type: 3}
   - {fileID: 8300000, guid: ecc505e179e1770429276d20075eeb20, type: 3}
   - {fileID: 8300000, guid: 3fbfb62544b33d14aa8cd72aef1022b8, type: 3}
-  - {fileID: 8300000, guid: 2af232cd490d87545ba9bf29ee10412f, type: 3}
   - {fileID: 8300000, guid: aaa6a71dc131e5c4988dfaa47f32fc4a, type: 3}
   - {fileID: 8300000, guid: 5b62c6c412b53c84abbefb3a0ccc6d97, type: 3}
   - {fileID: 8300000, guid: dd80a38344c69a24088f87bad85b62b8, type: 3}
-  - {fileID: 8300000, guid: 7e0323e79eb27e44aac6acc236808b94, type: 3}
   - {fileID: 8300000, guid: 5b743eea7c0392249af55f05291c5195, type: 3}
   - {fileID: 8300000, guid: 0b51d6d0f7053c440b6ebdc900592255, type: 3}
   deathSounds:
@@ -228,7 +226,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: a7597d34a61ef1b4e80ce083baafbb72, type: 3}
   - {fileID: 8300000, guid: 4c4083ab615eaa540954ea434298f223, type: 3}
   - {fileID: 8300000, guid: 5e7bfdd56b5418042b00f70db89c0a87, type: 3}
-  - {fileID: 8300000, guid: 6ce581664abdb4243966cd3c5ff2554f, type: 3}
   - {fileID: 8300000, guid: aa500a57fcef39a4d8d6de087930b010, type: 3}
   - {fileID: 8300000, guid: 111afb6dd38c63647b12070ca6fbe8c5, type: 3}
   - {fileID: 8300000, guid: 700a19364953f0949931ee57c9b88777, type: 3}
@@ -347,7 +344,7 @@ MonoBehaviour:
   - {x: 0.09208709, y: 0.1431843, z: 0}
   m_ShapePathHash: -1338343565
   m_Mesh: {fileID: 0}
-  m_InstanceId: 34472
+  m_InstanceId: 38842
 --- !u!82 &431949409081048265
 AudioSource:
   m_ObjectHideFlags: 0
