@@ -84,16 +84,11 @@ public class PlayerManager : MonoBehaviour
     [PunRPC]
     void RPC_EndGame(int winner)
     {
-        if (!PV.IsMine)
-        {
-            Debug.Log("PV isn't mine, team is " + team);
-            return;
-        }
-        Debug.Log("PV is mine, team is " + team);
-
         ScoreManager.Instance.DisplayWinner();
 
-        if (team == winner)
+        int localTeam = (int)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
+
+        if (localTeam == winner)
             end.EndGameWinSound();
         else
             end.EndGameLoseSound();
