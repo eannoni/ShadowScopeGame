@@ -217,8 +217,8 @@ public class PlayerController : MonoBehaviour
         // assign startPoint
         startPoint = laserFirePoint.position;
 
-        muzzleFlash.SetActive(true); // Turns on muzzle flash
-        Invoke("MuzzleStop", 0.05f); // Flash duration
+        //muzzleFlash.SetActive(true); // Turns on muzzle flash // Moved to "ShootLine"
+        //Invoke("MuzzleStop", 0.05f); // Flash duration
 
         if (hit) // if hit something
         {
@@ -260,6 +260,8 @@ public class PlayerController : MonoBehaviour
     void RPC_ShootLine(Vector3 startPos, Vector3 endPos)
     {
         ShotEffect(startPos, endPos);
+        muzzleFlash.SetActive(true);
+        Invoke("MuzzleStop", 0.05f);
     }
 
     // draws line from startPos to endPos for a given amount of time
