@@ -13,6 +13,10 @@ public class PlayerController : MonoBehaviour
     ScoreManager scoreManager;
     public GameObject moveLight; // Light for when you're moving
 
+    [Header("Particle Effects")]
+    public ParticleSystem shootEffect;
+    public ParticleSystem hitEffect;
+
     [Header("HUD Components")]
     public HealthBar healthBar;
     public TMP_Text userName;
@@ -51,7 +55,7 @@ public class PlayerController : MonoBehaviour
     public float fireRate = 0.3f;
     public float weaponRange = 1000f;
     public GameObject muzzleFlash; // Light for muzzle flash
-    float shotDuration = 0.07f; // how long the bullet trail is enabled
+    float shotDuration = 0.05f; // how long the bullet trail is enabled
     float nextFire; // amount of time before next fire is allowed
     Vector2 mousePos;
 
@@ -210,7 +214,7 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 startPoint; // holds start point info that will be sent to all other clients
         Vector3 endPoint; // holds end point info that will be sent to all other clients
-
+        
         // create raycast
         RaycastHit2D hit = Physics2D.Raycast(firePoint.position, mousePos);
 
@@ -267,6 +271,8 @@ public class PlayerController : MonoBehaviour
     // draws line from startPos to endPos for a given amount of time
     private void ShotEffect(Vector3 startPos, Vector3 endPos)
     {
+        // play shoot particle effect
+        shootEffect.Play();
         // instantiate and initialize LineRenderer prefab
         if (playerManager.team == 0)
         {
@@ -296,14 +302,11 @@ public class PlayerController : MonoBehaviour
     [PunRPC]
     void RPC_TakeDamage()
     {
+        hitEffect.Play();
         if (!pv.IsMine)
             return;
-
-        Debug.Log("Health before: " + currHealth);
         currHealth -= damage;
-        Debug.Log("Damage dealt: " + damage);
         healthBar.SetHealth(currHealth);
-        Debug.Log("Health after: " + currHealth);
         if (currHealth > 0)
             source.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length)]);
 
@@ -353,6 +356,7 @@ public class PlayerController : MonoBehaviour
         healthBar.gameObject.SetActive(false);
         userName.gameObject.SetActive(false);
         ammoDisplay.gameObject.SetActive(false);
+        moveLight.SetActive(false);
         body.Sleep();
         collider.enabled = false;
         GetComponent<SpriteRenderer>().enabled = false;

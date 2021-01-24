@@ -6,17 +6,20 @@ public class PickupManager : MonoBehaviour
 {
     public static PickupManager Instance;
 
-    public Pickup[] pickups;
+    public GameObject[] pickupObjects;
+    Pickup[] pickups;
 
     [SerializeField] float respawnTime = 10f;
 
     void Awake()
     {
         Instance = this;
+        pickups = new Pickup[pickupObjects.Length];
 
         // assign pick-up IDs
-        for(int i = 0; i < pickups.Length; ++i)
+        for(int i = 0; i < pickupObjects.Length; ++i)
         {
+            pickups[i] = pickupObjects[i].GetComponentInChildren<Pickup>();
             pickups[i].id = i;
         }
     }

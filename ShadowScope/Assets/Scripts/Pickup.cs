@@ -7,12 +7,7 @@ public abstract class Pickup : MonoBehaviour
     public int id;
     [SerializeField] bool active;
     public float inactiveTime;
-    SpriteRenderer spriteRenderer;
-
-    void Awake()
-    {
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-    }
+    public SpriteRenderer spriteRenderer;
 
     // Start is called before the first frame update
     void Start()
