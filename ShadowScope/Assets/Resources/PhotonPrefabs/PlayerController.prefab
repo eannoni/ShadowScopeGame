@@ -233,6 +233,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 700a19364953f0949931ee57c9b88777, type: 3}
   - {fileID: 8300000, guid: bba098961ef54134f9327b2cd08ee87f, type: 3}
   - {fileID: 8300000, guid: 33e3c4ac7d6699c4292230cf509f44bf, type: 3}
+  - {fileID: 8300000, guid: 6ce581664abdb4243966cd3c5ff2554f, type: 3}
   hurtSounds:
   - {fileID: 8300000, guid: 1ad88a8d0878e174a9ae70139ffd455c, type: 3}
   - {fileID: 8300000, guid: 3f53fc3f8e0afae40b07131cb9c38ae2, type: 3}
