@@ -19,7 +19,7 @@ public class ScoreManager : MonoBehaviour
     public int redKills;
     public int blueKills;
 
-    public const int killsNeeded = 5;
+    public int killsNeeded;
 
     void Awake()
     {
@@ -36,6 +36,8 @@ public class ScoreManager : MonoBehaviour
     void Start()
     {
         MenuManager.Instance.OpenMenu(scoreMenu);
+        GameObject[] activePlayers = GameObject.FindGameObjectsWithTag("Player");
+        killsNeeded = (activePlayers.Length / 2) * 5;
 
         redKills = 0;
         blueKills = 0;
