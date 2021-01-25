@@ -7,7 +7,7 @@ using TMPro;
 public class PlayerController : MonoBehaviour
 {
     Rigidbody2D body;
-    CircleCollider2D collider;
+    CircleCollider2D circleCollider;
     PhotonView pv;
     PlayerManager playerManager;
     ScoreManager scoreManager;
@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         body = GetComponent<Rigidbody2D>();
-        collider = GetComponent<CircleCollider2D>();
+        circleCollider = GetComponent<CircleCollider2D>();
         pv = GetComponent<PhotonView>();
 
         // gets player manager
@@ -101,8 +101,8 @@ public class PlayerController : MonoBehaviour
         SetUserName();
         UpdateAmmoDisplay();
 
-        walkSpeed = 10.0f;
-        crouchSpeed = 5.0f;
+        walkSpeed = 10f;
+        crouchSpeed = 3.5f;
     }
 
     void Update()
@@ -358,7 +358,7 @@ public class PlayerController : MonoBehaviour
         ammoDisplay.gameObject.SetActive(false);
         moveLight.SetActive(false);
         body.Sleep();
-        collider.enabled = false;
+        circleCollider.enabled = false;
         GetComponent<SpriteRenderer>().enabled = false;
     }
 }
