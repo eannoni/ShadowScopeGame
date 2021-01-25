@@ -16,6 +16,10 @@ public class QuitToMenuButton : MonoBehaviour
         PhotonNetwork.LeaveRoom();
         while (PhotonNetwork.InRoom)
             yield return null;
+
+        Destroy(Launcher.Instance);
+        Destroy(RoomManager.Instance);
+
         SceneManager.LoadScene(0);
     }
 }
