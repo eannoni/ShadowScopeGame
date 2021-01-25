@@ -129,20 +129,18 @@ public class PlayerController : MonoBehaviour
                 Shoot();
             }
         }
-        else
-        {
-            horizontal = 0;
-            vertical = 0;
-            crouching = false;
-        }
     }
 
     void FixedUpdate()
     {
         if (!pv.IsMine) // only let the player control this one
             return;
-        Move();
-        Rotate();
+
+        if (!isDead)
+        {
+            Move();
+            Rotate();
+        }
     }
 
     public void CollectedHealthPickup(int id)
