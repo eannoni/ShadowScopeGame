@@ -179,6 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96d4ce6a457c64234b94e1bd2e6a1844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sightLight: {fileID: 1454708945762343227}
   moveLight: {fileID: 7936077653993911224}
   shootEffect: {fileID: 1757914004907357118}
   hitEffect: {fileID: 2149640160894759625}
@@ -347,7 +348,7 @@ MonoBehaviour:
   - {x: 0.09208709, y: 0.1431843, z: 0}
   m_ShapePathHash: -1338343565
   m_Mesh: {fileID: 0}
-  m_InstanceId: 50416
+  m_InstanceId: 37536
 --- !u!82 &431949409081048265
 AudioSource:
   m_ObjectHideFlags: 0

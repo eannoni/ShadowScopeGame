@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     PhotonView pv;
     PlayerManager playerManager;
     ScoreManager scoreManager;
+    public GameObject sightLight;
     public GameObject moveLight; // Light for when you're moving
 
     [Header("Particle Effects")]
@@ -361,6 +362,7 @@ public class PlayerController : MonoBehaviour
         userName.gameObject.SetActive(false);
         ammoDisplay.gameObject.SetActive(false);
         moveLight.SetActive(false);
+        sightLight.SetActive(false);
         body.Sleep();
         circleCollider.enabled = false;
         GetComponent<SpriteRenderer>().enabled = false;
