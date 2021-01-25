@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Photon.Pun;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class ScoreManager : MonoBehaviour
 
     void Awake()
     {
+        killsNeeded = (5 * PhotonNetwork.CurrentRoom.PlayerCount) / 2; ;
+
         // standard Singleton pattern
         if (Instance)
         {
@@ -36,12 +39,11 @@ public class ScoreManager : MonoBehaviour
     void Start()
     {
         MenuManager.Instance.OpenMenu(scoreMenu);
-        GameObject[] activePlayers = GameObject.FindGameObjectsWithTag("Player");
-        killsNeeded = (5 * activePlayers.Length) / 2;
 
         redKills = 0;
         blueKills = 0;
         SetScoreText();
+        Debug.Log("4");
     }
 
     public int IsWinner()
