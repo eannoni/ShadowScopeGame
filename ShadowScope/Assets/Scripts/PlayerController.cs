@@ -129,6 +129,12 @@ public class PlayerController : MonoBehaviour
                 Shoot();
             }
         }
+        else
+        {
+            horizontal = 0;
+            vertical = 0;
+            crouching = false;
+        }
     }
 
     void FixedUpdate()
