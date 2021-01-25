@@ -37,7 +37,7 @@ public class ScoreManager : MonoBehaviour
     {
         MenuManager.Instance.OpenMenu(scoreMenu);
         GameObject[] activePlayers = GameObject.FindGameObjectsWithTag("Player");
-        killsNeeded = (activePlayers.Length / 2) * 5;
+        killsNeeded = (5 * activePlayers.Length) / 2;
 
         redKills = 0;
         blueKills = 0;
