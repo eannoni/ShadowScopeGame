@@ -43,7 +43,6 @@ public class ScoreManager : MonoBehaviour
         redKills = 0;
         blueKills = 0;
         SetScoreText();
-        Debug.Log("4");
     }
 
     public int IsWinner()

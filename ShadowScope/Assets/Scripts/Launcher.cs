@@ -5,6 +5,7 @@ using Photon.Pun; //Photon Unity Networking
 using TMPro;
 using Photon.Realtime;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class Launcher : MonoBehaviourPunCallbacks //gives access to callbacks for room creation, errors, joining lobbies, etc.
 {
@@ -77,10 +78,10 @@ public class Launcher : MonoBehaviourPunCallbacks //gives access to callbacks fo
     {
         // make sure user doesn't generate room with empty name
         if (string.IsNullOrEmpty(roomNameInputField.text))
-        {
             return;
-        }
+
         PhotonNetwork.CreateRoom(roomNameInputField.text);
+
         MenuManager.Instance.OpenMenu("loading");
     }
 
@@ -163,6 +164,9 @@ public class Launcher : MonoBehaviourPunCallbacks //gives access to callbacks fo
 
     public void StartGame()
     {
+        // makes the room invisible in the Find Room menu
+        PhotonNetwork.CurrentRoom.IsVisible = false;
+
         // 1 is the scene index in the Build Settings (Game scene)
         // this applies to all players in game, rather than unity loading the scene which would only trigger the host's scene
         PhotonNetwork.LoadLevel(1);
