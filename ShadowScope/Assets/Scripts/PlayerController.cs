@@ -135,7 +135,6 @@ public class PlayerController : MonoBehaviour
                     //force movement to be zero before going into pause menu
                     horizontal = 0;
                     vertical = 0;
-                    crouching = false;
                     Move();
                     MenuManager.Instance.OpenMenu("winner");
                     isPaused = true;
