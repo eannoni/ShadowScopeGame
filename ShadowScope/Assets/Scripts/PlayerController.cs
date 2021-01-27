@@ -46,6 +46,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] const int maxHealth = 4;
     [SerializeField] int currHealth = maxHealth;
     bool isDead = false;
+    public bool isPaused = false;
 
     [Header("Ammo")]
     [SerializeField] const int maxAmmo = 25;
@@ -120,7 +121,20 @@ public class PlayerController : MonoBehaviour
 
             mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            if (Input.GetButtonDown("Fire1") && Time.time > nextFire && currAmmo > 0) // Left click fires
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if(isPaused)
+                {
+                    MenuManager.Instance.CloseAllMenus();
+                    isPaused = false;
+                } else
+                {
+                    MenuManager.Instance.OpenMenu("winner");
+                    isPaused = true;
+                }
+            }
+
+            if (!isDead && !isPaused && Input.GetButtonDown("Fire1") && Time.time > nextFire && currAmmo > 0) // Left click fires
             {
                 //shoot sound
                 source.PlayOneShot(shootSounds[0]);
@@ -137,7 +151,7 @@ public class PlayerController : MonoBehaviour
         if (!pv.IsMine) // only let the player control this one
             return;
 
-        if (!isDead)
+        if (!isDead && !isPaused)
         {
             Move();
             Rotate();
@@ -296,7 +310,6 @@ public class PlayerController : MonoBehaviour
             Destroy(laserGO.gameObject, shotDuration);
         }
     }
-
 
 
     public void TakeDamage(string killerName)

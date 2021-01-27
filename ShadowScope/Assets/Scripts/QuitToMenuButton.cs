@@ -2,23 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using UnityEngine.SceneManagement;
 
-public class QuitToMenuButton : MonoBehaviourPunCallbacks
+public class QuitToMenuButton : MonoBehaviour
 {
     public void OnQuitClick()
     {
-        Debug.Log("In disconnect and load coroutine");
-        Destroy(RoomManager.Instance.gameObject);
-        Destroy(ScoreManager.Instance.gameObject);
-        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.Disconnect();
+        StartCoroutine(QuitGame());
     }
 
-    public override void OnLeftRoom()
+    IEnumerator QuitGame()
     {
-        Debug.Log("On left room");
-        SceneManager.LoadScene(0);
-        base.OnLeftRoom();
-        MenuManager.Instance.OpenMenu("title");
+        yield return new WaitWhile(() => PhotonNetwork.IsConnected);
+        Application.Quit();
     }
 }

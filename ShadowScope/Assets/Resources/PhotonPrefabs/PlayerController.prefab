@@ -198,6 +198,7 @@ MonoBehaviour:
   crouchSpeed: 0
   crouching: 0
   currHealth: 4
+  isPaused: 0
   currAmmo: 10
   damage: 1
   fireRate: 0.25
