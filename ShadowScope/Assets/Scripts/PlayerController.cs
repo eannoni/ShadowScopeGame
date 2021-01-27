@@ -114,12 +114,15 @@ public class PlayerController : MonoBehaviour
 
         if (scoreManager.IsWinner() == -1 && !isDead)
         {
-            horizontal = Input.GetAxisRaw("Horizontal");
-            vertical = Input.GetAxisRaw("Vertical");
+            if (!isPaused)
+            {
+                horizontal = Input.GetAxisRaw("Horizontal");
+                vertical = Input.GetAxisRaw("Vertical");
 
-            crouching = Input.GetKey(KeyCode.LeftShift);
+                crouching = Input.GetKey(KeyCode.LeftShift);
 
-            mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            }
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
@@ -129,6 +132,11 @@ public class PlayerController : MonoBehaviour
                     isPaused = false;
                 } else
                 {
+                    //force movement to be zero before going into pause menu
+                    horizontal = 0;
+                    vertical = 0;
+                    crouching = false;
+                    Move();
                     MenuManager.Instance.OpenMenu("winner");
                     isPaused = true;
                 }
